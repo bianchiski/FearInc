@@ -4,9 +4,19 @@
   "type": "quiz",
   "title": "React render snapshot",
   "prompt": "What does calling a state setter do to the state value already in the current render?",
-  "choices": ["It requests another render; this render keeps its snapshot", "It mutates the current state variable immediately", "It updates the DOM before the event handler returns"],
+  "choices": [
+    "It requests another render; this render keeps its snapshot",
+    "It mutates the current state variable immediately",
+    "It updates the DOM before the event handler returns"
+  ],
   "answer": "It requests another render; this render keeps its snapshot",
   "explanation": "Current React 19 documentation says rendering calls the component and that render keeps one state snapshot. Hooks must be called in the same order at the top level so React can match each stored state cell.",
-  "sources": ["https://react.dev/learn/state-as-a-snapshot", "https://react.dev/reference/rules/rules-of-hooks"],
-  "verified": "2026-10-30"
+  "sources": [
+    "https://react.dev/learn/state-as-a-snapshot",
+    "https://react.dev/reference/rules/rules-of-hooks"
+  ],
+  "verified": "2026-10-30",
+  "theory": [
+    "react-rendering"
+  ]
 }

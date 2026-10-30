@@ -5,9 +5,18 @@
   "aiStyled": true,
   "title": "Optional: review a plausible wrong solution",
   "prompt": "A generated binary search uses mid = (low + high) / 2 and loops while low < high. Which answer names the bug that matters first?",
-  "choices": ["low + high can overflow an int", "binary search cannot run in Java", "the array must be copied first"],
+  "choices": [
+    "low + high can overflow an int",
+    "binary search cannot run in Java",
+    "the array must be copied first"
+  ],
   "answer": "low + high can overflow an int",
   "explanation": "The safer midpoint is low + (high - low) / 2. This drill stays hidden until AI-style drills are enabled.",
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html"],
-  "verified": "2026-10-30"
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html"
+  ],
+  "verified": "2026-10-30",
+  "theory": [
+    "interview-explanation"
+  ]
 }

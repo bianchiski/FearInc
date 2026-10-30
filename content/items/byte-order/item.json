@@ -4,6 +4,11 @@
   "type": "lesson",
   "title": "Bytes and endianness",
   "body": "A Java int is 32 bits. Big-endian stores the most significant byte first; little-endian stores it last. In Java 25, a newly created ByteBuffer always uses BIG_ENDIAN, and order(ByteOrder) changes it. The choice matters when another language or a socket reads the same bytes.",
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/ByteBuffer.html"],
-  "verified": "2026-10-30"
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/ByteBuffer.html"
+  ],
+  "verified": "2026-10-30",
+  "theory": [
+    "byte-order"
+  ]
 }

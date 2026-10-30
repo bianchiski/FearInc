@@ -6,20 +6,65 @@
   "difficulty": "medium",
   "className": "IntQueue",
   "pattern": "queue",
-  "statement": "Build an integer queue with enqueue, dequeue, and size. The oldest value leaves first. Use a circular buffer and grow it without losing order.",
-  "constraints": ["dequeue on an empty queue throws IllegalStateException."],
-  "complexity": {"time": "amortized O(1) enqueue and dequeue", "space": "O(n)"},
-  "concepts": ["queue"],
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayDeque.html"],
+  "statement": "Start simple: Build an integer queue with enqueue, dequeue, and size. The oldest value leaves first. Use a circular buffer and grow it without losing order. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "constraints": [
+    "dequeue on an empty queue throws IllegalStateException."
+  ],
+  "complexity": {
+    "time": "amortized O(1) enqueue and dequeue",
+    "space": "O(n)"
+  },
+  "concepts": [
+    "queue"
+  ],
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayDeque.html"
+  ],
   "verified": "2026-10-30",
-  "think": ["A queue has two ends.", "Head and tail indexes can wrap around the array.", "Size distinguishes full from empty when both indexes meet.", "On growth, copy from head in queue order into a fresh array."],
-  "hints": ["Store head, tail, and size.", "Use modulo for the next index.", "When copying, start at head rather than index zero."],
+  "think": [
+    "A queue has two ends.",
+    "Head and tail indexes can wrap around the array.",
+    "Size distinguishes full from empty when both indexes meet.",
+    "On growth, copy from head in queue order into a fresh array."
+  ],
+  "hints": [
+    "Store head, tail, and size.",
+    "Use modulo for the next index.",
+    "When copying, start at head rather than index zero."
+  ],
   "tests": [
-    {"name": "fifo", "call": "{ IntQueue q = new IntQueue(); q.enqueue(1); q.enqueue(2); return q.dequeue() + \",\" + q.dequeue(); }", "expect": "1,2"},
-    {"name": "size", "call": "{ IntQueue q = new IntQueue(); q.enqueue(1); q.enqueue(2); return String.valueOf(q.size()); }", "expect": "2"},
-    {"name": "wrap", "call": "{ IntQueue q = new IntQueue(); q.enqueue(1); q.enqueue(2); q.dequeue(); q.enqueue(3); return q.dequeue() + \",\" + q.dequeue(); }", "expect": "2,3"},
-    {"name": "grow", "call": "{ IntQueue q = new IntQueue(); for (int i = 0; i < 20; i++) q.enqueue(i); return q.dequeue() + \":\" + q.size(); }", "expect": "0:19"},
-    {"name": "drain", "call": "{ IntQueue q = new IntQueue(); q.enqueue(7); q.dequeue(); return String.valueOf(q.size()); }", "expect": "0"},
-    {"name": "order-after-growth", "call": "{ IntQueue q = new IntQueue(); for (int i = 1; i <= 8; i++) q.enqueue(i); StringBuilder b = new StringBuilder(); while (q.size() > 0) { if (!b.isEmpty()) b.append(','); b.append(q.dequeue()); } return b.toString(); }", "expect": "1,2,3,4,5,6,7,8"}
+    {
+      "name": "fifo",
+      "call": "{ IntQueue q = new IntQueue(); q.enqueue(1); q.enqueue(2); return q.dequeue() + \",\" + q.dequeue(); }",
+      "expect": "1,2"
+    },
+    {
+      "name": "size",
+      "call": "{ IntQueue q = new IntQueue(); q.enqueue(1); q.enqueue(2); return String.valueOf(q.size()); }",
+      "expect": "2"
+    },
+    {
+      "name": "wrap",
+      "call": "{ IntQueue q = new IntQueue(); q.enqueue(1); q.enqueue(2); q.dequeue(); q.enqueue(3); return q.dequeue() + \",\" + q.dequeue(); }",
+      "expect": "2,3"
+    },
+    {
+      "name": "grow",
+      "call": "{ IntQueue q = new IntQueue(); for (int i = 0; i < 20; i++) q.enqueue(i); return q.dequeue() + \":\" + q.size(); }",
+      "expect": "0:19"
+    },
+    {
+      "name": "drain",
+      "call": "{ IntQueue q = new IntQueue(); q.enqueue(7); q.dequeue(); return String.valueOf(q.size()); }",
+      "expect": "0"
+    },
+    {
+      "name": "order-after-growth",
+      "call": "{ IntQueue q = new IntQueue(); for (int i = 1; i <= 8; i++) q.enqueue(i); StringBuilder b = new StringBuilder(); while (q.size() > 0) { if (!b.isEmpty()) b.append(','); b.append(q.dequeue()); } return b.toString(); }",
+      "expect": "1,2,3,4,5,6,7,8"
+    }
+  ],
+  "theory": [
+    "queue"
   ]
 }

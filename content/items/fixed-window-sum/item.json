@@ -6,20 +6,66 @@
   "difficulty": "easy",
   "className": "Solution",
   "pattern": "sliding-window",
-  "statement": "Return the largest sum of any contiguous block of exactly width elements.",
-  "constraints": ["width is at least 1 and no larger than the array.", "Values may be negative."],
-  "complexity": {"time": "O(n)", "space": "O(1)"},
-  "concepts": ["sliding-window"],
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html"],
+  "statement": "Start simple: Return the largest sum of any contiguous block of exactly width elements. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "constraints": [
+    "width is at least 1 and no larger than the array.",
+    "Values may be negative."
+  ],
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "concepts": [
+    "sliding-window"
+  ],
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html"
+  ],
   "verified": "2026-10-30",
-  "think": ["Recalculating every block repeats most additions.", "The next block differs by one entering and one leaving value.", "Start with the first full window.", "Update the best sum as the window moves right."],
-  "hints": ["Compute the first window once.", "Subtract the value that falls out on the left.", "Negative values mean you cannot keep only positive sums."],
+  "think": [
+    "Recalculating every block repeats most additions.",
+    "The next block differs by one entering and one leaving value.",
+    "Start with the first full window.",
+    "Update the best sum as the window moves right."
+  ],
+  "hints": [
+    "Compute the first window once.",
+    "Subtract the value that falls out on the left.",
+    "Negative values mean you cannot keep only positive sums."
+  ],
   "tests": [
-    {"name": "basic", "call": "String.valueOf(new Solution().maxWindow(new int[]{1,2,3,4}, 2))", "expect": "7"},
-    {"name": "width-one", "call": "String.valueOf(new Solution().maxWindow(new int[]{4,-1,2}, 1))", "expect": "4"},
-    {"name": "all", "call": "String.valueOf(new Solution().maxWindow(new int[]{1,2,3}, 3))", "expect": "6"},
-    {"name": "negative", "call": "String.valueOf(new Solution().maxWindow(new int[]{-2,-3,-1,-4}, 2))", "expect": "-4"},
-    {"name": "middle", "call": "String.valueOf(new Solution().maxWindow(new int[]{1,5,2,8,1}, 3))", "expect": "15"},
-    {"name": "tail", "call": "String.valueOf(new Solution().maxWindow(new int[]{9,1,1,8}, 2))", "expect": "10"}
+    {
+      "name": "basic",
+      "call": "String.valueOf(new Solution().maxWindow(new int[]{1,2,3,4}, 2))",
+      "expect": "7"
+    },
+    {
+      "name": "width-one",
+      "call": "String.valueOf(new Solution().maxWindow(new int[]{4,-1,2}, 1))",
+      "expect": "4"
+    },
+    {
+      "name": "all",
+      "call": "String.valueOf(new Solution().maxWindow(new int[]{1,2,3}, 3))",
+      "expect": "6"
+    },
+    {
+      "name": "negative",
+      "call": "String.valueOf(new Solution().maxWindow(new int[]{-2,-3,-1,-4}, 2))",
+      "expect": "-4"
+    },
+    {
+      "name": "middle",
+      "call": "String.valueOf(new Solution().maxWindow(new int[]{1,5,2,8,1}, 3))",
+      "expect": "15"
+    },
+    {
+      "name": "tail",
+      "call": "String.valueOf(new Solution().maxWindow(new int[]{9,1,1,8}, 2))",
+      "expect": "10"
+    }
+  ],
+  "theory": [
+    "sliding-window"
   ]
 }

@@ -6,20 +6,66 @@
   "difficulty": "easy",
   "className": "Solution",
   "pattern": "binary-search",
-  "statement": "Return the index of target in a sorted ascending array, or -1 when it is absent.",
-  "constraints": ["The array contains no duplicates.", "Use the shrinking-range form of binary search."],
-  "complexity": {"time": "O(log n)", "space": "O(1)"},
-  "concepts": ["binary-search"],
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html"],
+  "statement": "Start simple: Return the index of target in a sorted ascending array, or -1 when it is absent. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "constraints": [
+    "The array contains no duplicates.",
+    "Use the shrinking-range form of binary search."
+  ],
+  "complexity": {
+    "time": "O(log n)",
+    "space": "O(1)"
+  },
+  "concepts": [
+    "binary-search"
+  ],
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html"
+  ],
   "verified": "2026-10-30",
-  "think": ["A linear scan works but ignores the sort.", "Keep a low and high bound and discard half each time.", "Compute the midpoint without overflowing the index sum.", "Stop when the range becomes empty."],
-  "hints": ["Maintain an inclusive low and high.", "Move low to mid + 1 when the middle is too small.", "Return -1 only after the bounds cross."],
+  "think": [
+    "A linear scan works but ignores the sort.",
+    "Keep a low and high bound and discard half each time.",
+    "Compute the midpoint without overflowing the index sum.",
+    "Stop when the range becomes empty."
+  ],
+  "hints": [
+    "Maintain an inclusive low and high.",
+    "Move low to mid + 1 when the middle is too small.",
+    "Return -1 only after the bounds cross."
+  ],
   "tests": [
-    {"name": "middle", "call": "String.valueOf(new Solution().indexOf(new int[]{1,3,5,7,9}, 5))", "expect": "2"},
-    {"name": "first", "call": "String.valueOf(new Solution().indexOf(new int[]{1,3,5,7,9}, 1))", "expect": "0"},
-    {"name": "last", "call": "String.valueOf(new Solution().indexOf(new int[]{1,3,5,7,9}, 9))", "expect": "4"},
-    {"name": "missing", "call": "String.valueOf(new Solution().indexOf(new int[]{1,3,5,7,9}, 4))", "expect": "-1"},
-    {"name": "empty", "call": "String.valueOf(new Solution().indexOf(new int[]{}, 1))", "expect": "-1"},
-    {"name": "one", "call": "String.valueOf(new Solution().indexOf(new int[]{8}, 8))", "expect": "0"}
+    {
+      "name": "middle",
+      "call": "String.valueOf(new Solution().indexOf(new int[]{1,3,5,7,9}, 5))",
+      "expect": "2"
+    },
+    {
+      "name": "first",
+      "call": "String.valueOf(new Solution().indexOf(new int[]{1,3,5,7,9}, 1))",
+      "expect": "0"
+    },
+    {
+      "name": "last",
+      "call": "String.valueOf(new Solution().indexOf(new int[]{1,3,5,7,9}, 9))",
+      "expect": "4"
+    },
+    {
+      "name": "missing",
+      "call": "String.valueOf(new Solution().indexOf(new int[]{1,3,5,7,9}, 4))",
+      "expect": "-1"
+    },
+    {
+      "name": "empty",
+      "call": "String.valueOf(new Solution().indexOf(new int[]{}, 1))",
+      "expect": "-1"
+    },
+    {
+      "name": "one",
+      "call": "String.valueOf(new Solution().indexOf(new int[]{8}, 8))",
+      "expect": "0"
+    }
+  ],
+  "theory": [
+    "binary-search"
   ]
 }

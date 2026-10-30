@@ -6,6 +6,11 @@
   "prompt": "A stack test calls pop before push and throws IllegalStateException: empty. What is the first broken assumption?",
   "answer": "pop assumed the stack was not empty",
   "explanation": "The exception is the empty check working. The missing regression test is pop on a new stack, plus pop after the last value has already been removed.",
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayDeque.html"],
-  "verified": "2026-10-30"
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayDeque.html"
+  ],
+  "verified": "2026-10-30",
+  "theory": [
+    "stack"
+  ]
 }

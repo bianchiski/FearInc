@@ -4,9 +4,18 @@
   "type": "quiz",
   "title": "HashMap defaults",
   "prompt": "A new HashMap() in Java 25 starts with which capacity and load factor?",
-  "choices": ["16 buckets and 0.75", "10 buckets and 1.0", "8 buckets and 0.5"],
+  "choices": [
+    "16 buckets and 0.75",
+    "10 buckets and 1.0",
+    "8 buckets and 0.5"
+  ],
   "answer": "16 buckets and 0.75",
   "explanation": "The Java 25 HashMap documentation says the no-argument constructor uses capacity 16 and load factor 0.75. When entries exceed capacity times load factor, the table rehashes to about twice as many buckets.",
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html"],
-  "verified": "2026-10-30"
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html"
+  ],
+  "verified": "2026-10-30",
+  "theory": [
+    "hash-map"
+  ]
 }

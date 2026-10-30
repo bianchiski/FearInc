@@ -4,6 +4,11 @@
   "type": "lesson",
   "title": "Indexes and joins",
   "body": "A selective index lets the database find matching rows without reading the whole table. A join is correct because of the relationship between keys, not because it runs quickly. Check the query plan before adding an index, and remember that every extra index slows writes.",
-  "sources": ["https://www.postgresql.org/docs/current/indexes.html"],
-  "verified": "2026-10-30"
+  "sources": [
+    "https://www.postgresql.org/docs/current/indexes.html"
+  ],
+  "verified": "2026-10-30",
+  "theory": [
+    "sql-index"
+  ]
 }

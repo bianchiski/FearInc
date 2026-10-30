@@ -6,20 +6,66 @@
   "difficulty": "easy",
   "className": "DynamicArray",
   "pattern": "array",
-  "statement": "Build a growable integer array with add, get, and size. Adding past capacity must preserve every existing value.",
-  "constraints": ["Start with a small backing array.", "get rejects an index outside the logical size."],
-  "complexity": {"time": "amortized O(1) add, O(1) get", "space": "O(n)"},
-  "concepts": ["dynamic-array"],
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html"],
+  "statement": "Start simple: Build a growable integer array with add, get, and size. Adding past capacity must preserve every existing value. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "constraints": [
+    "Start with a small backing array.",
+    "get rejects an index outside the logical size."
+  ],
+  "complexity": {
+    "time": "amortized O(1) add, O(1) get",
+    "space": "O(n)"
+  },
+  "concepts": [
+    "dynamic-array"
+  ],
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayList.html"
+  ],
   "verified": "2026-10-30",
-  "think": ["An array has fixed length, so growth needs a new array.", "Copy the old values before continuing.", "Track the logical size separately from the capacity.", "Doubling makes occasional copies cheap across many additions."],
-  "hints": ["Keep an int array and a size field.", "When size equals capacity, allocate a larger array and copy.", "get must use size, not the backing length."],
+  "think": [
+    "An array has fixed length, so growth needs a new array.",
+    "Copy the old values before continuing.",
+    "Track the logical size separately from the capacity.",
+    "Doubling makes occasional copies cheap across many additions."
+  ],
+  "hints": [
+    "Keep an int array and a size field.",
+    "When size equals capacity, allocate a larger array and copy.",
+    "get must use size, not the backing length."
+  ],
   "tests": [
-    {"name": "empty", "call": "String.valueOf(new DynamicArray().size())", "expect": "0"},
-    {"name": "one", "call": "{ DynamicArray a = new DynamicArray(); a.add(4); return a.size() + \":\" + a.get(0); }", "expect": "1:4"},
-    {"name": "order", "call": "{ DynamicArray a = new DynamicArray(); a.add(1); a.add(2); a.add(3); return a.get(0) + \",\" + a.get(1) + \",\" + a.get(2); }", "expect": "1,2,3"},
-    {"name": "grows", "call": "{ DynamicArray a = new DynamicArray(); for (int i = 0; i < 20; i++) a.add(i); return a.size() + \":\" + a.get(19); }", "expect": "20:19"},
-    {"name": "zero", "call": "{ DynamicArray a = new DynamicArray(); a.add(0); return String.valueOf(a.get(0)); }", "expect": "0"},
-    {"name": "negative", "call": "{ DynamicArray a = new DynamicArray(); a.add(-5); a.add(8); return a.get(0) + \":\" + a.get(1); }", "expect": "-5:8"}
+    {
+      "name": "empty",
+      "call": "String.valueOf(new DynamicArray().size())",
+      "expect": "0"
+    },
+    {
+      "name": "one",
+      "call": "{ DynamicArray a = new DynamicArray(); a.add(4); return a.size() + \":\" + a.get(0); }",
+      "expect": "1:4"
+    },
+    {
+      "name": "order",
+      "call": "{ DynamicArray a = new DynamicArray(); a.add(1); a.add(2); a.add(3); return a.get(0) + \",\" + a.get(1) + \",\" + a.get(2); }",
+      "expect": "1,2,3"
+    },
+    {
+      "name": "grows",
+      "call": "{ DynamicArray a = new DynamicArray(); for (int i = 0; i < 20; i++) a.add(i); return a.size() + \":\" + a.get(19); }",
+      "expect": "20:19"
+    },
+    {
+      "name": "zero",
+      "call": "{ DynamicArray a = new DynamicArray(); a.add(0); return String.valueOf(a.get(0)); }",
+      "expect": "0"
+    },
+    {
+      "name": "negative",
+      "call": "{ DynamicArray a = new DynamicArray(); a.add(-5); a.add(8); return a.get(0) + \":\" + a.get(1); }",
+      "expect": "-5:8"
+    }
+  ],
+  "theory": [
+    "dynamic-array"
   ]
 }

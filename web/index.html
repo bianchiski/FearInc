@@ -18,6 +18,15 @@
     .item.active { outline: 2px solid #6e8cff; }
     textarea { width: 100%; min-height: 240px; border-radius: 12px; border: 1px solid #304a78; background: #080d17; color: #dce8ff; padding: 14px; font: 13px/1.55 Consolas, monospace; }
     pre { white-space: pre-wrap; background: #080d17; border-radius: 12px; padding: 12px; }
+    details.theory { margin: 18px 0; background: #10213b; border: 1px solid #36598d; border-radius: 14px; padding: 14px 16px; }
+    details.theory summary { cursor: pointer; color: #bcd1ff; font-weight: 700; }
+    .theory-body { color: #d9e5ff; line-height: 1.7; }
+    .theory-body h1, .theory-body h2, .theory-body h3 { color: #fff; margin-top: 18px; }
+    .theory-body code { background: #080d17; padding: 2px 5px; border-radius: 4px; }
+    .theory-body pre { border: 1px solid #243d67; }
+    .reference-code { margin: 12px 0; }
+    .reference-code summary { cursor: pointer; color: #bcd1ff; }
+    .reference-code pre { overflow-x: auto; border: 1px solid #36598d; color: #dce8ff; }
     .muted { color: #8fa3c9; } .ok { color: #3dd6a0; } .bad { color: #ff8d8d; }
     @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
   </style>
@@ -56,6 +65,22 @@ async function load() {
   openItem(catalog.items.find(item => item.type === 'code-problem').id);
 }
 function item(id) { return catalog.items.find(x => x.id === id); }
+function theoryHtml(markdown) {
+  let html = markdown.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+  html = html.replace(/```(?:java)?\n([\s\S]*?)```/g, '<pre>$1</pre>');
+  html = html.replace(/^### (.*)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.*)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.*)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^- (.*)$/gm, '<li>$1</li>')
+    .replace(/\n{2,}/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+  return `<p>${html}</p>`.replace(/(<li>.*?<\/li>)(?:<br>)?/g, '<ul>$1</ul>');
+}
+function codeHtml(source) {
+  return `<details class="reference-code"><summary>Show optional C solution (reference)</summary><pre>${source.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')}</pre></details>`;
+}
 function openItem(id) {
   current = item(id); hintsUsed = 0; thinkAt = 0;
   const code = current.type === 'code-problem';
@@ -64,9 +89,11 @@ function openItem(id) {
     <p class="muted">${current.module} · ${current.type}</p>
     <h2>${current.title}</h2>
     <p>${current.statement || current.body || current.prompt || ''}</p>
+    <details class="theory"><summary>Learn first (optional)</summary><div class="theory-body">${theoryHtml(current.theoryText || '')}</div></details>
     ${current.constraints ? `<p class="muted">${current.constraints.join(' ')}</p>` : ''}
     ${current.complexity ? `<p class="muted">Target: ${current.complexity.time}, ${current.complexity.space}</p>` : ''}
     ${current.think ? `<h3>Think</h3><p id="think">${current.think[0]}</p><button onclick="nextThink()">Next step</button>` : ''}
+    ${code && current.solutionC ? codeHtml(current.solutionC) : ''}
     ${code ? `<button class="secondary" onclick="hint()">Hint</button><p id="hint"></p><textarea id="code"></textarea><button onclick="runCode()">Run hidden tests</button>` : ''}
     ${quiz ? (current.choices || []).map(choice => `<button class="secondary" onclick="answer('${choice.replaceAll("'", "\\'")}')">${choice}</button>`).join('') + `<p>Or type the exact answer:</p><textarea id="answer"></textarea><button onclick="answer($('answer').value)">Check</button>` : ''}
     ${current.type === 'explain' ? `<p>${current.rubric.join(' · ')}</p><button onclick="score(5)">I covered all four</button><button class="secondary" onclick="score(3)">I missed one</button><button class="secondary" onclick="score(1)">I could not explain it</button>` : ''}

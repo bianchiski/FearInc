@@ -6,20 +6,66 @@
   "difficulty": "easy",
   "className": "Solution",
   "pattern": "set",
-  "statement": "Return true when any integer appears more than once.",
-  "constraints": ["Order does not matter.", "An empty array has no duplicate."],
-  "complexity": {"time": "O(n)", "space": "O(n)"},
-  "concepts": ["hash-set"],
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashSet.html"],
+  "statement": "Start simple: Return true when any integer appears more than once. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "constraints": [
+    "Order does not matter.",
+    "An empty array has no duplicate."
+  ],
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(n)"
+  },
+  "concepts": [
+    "hash-set"
+  ],
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashSet.html"
+  ],
   "verified": "2026-10-30",
-  "think": ["Comparing every pair is correct and quadratic.", "Remember values already seen.", "A set reports whether insertion was new.", "Stop at the first repeated insertion."],
-  "hints": ["Use a set of seen numbers.", "HashSet.add returns false when the value was already present.", "Do not sort unless you also want to discuss the time trade-off."],
+  "think": [
+    "Comparing every pair is correct and quadratic.",
+    "Remember values already seen.",
+    "A set reports whether insertion was new.",
+    "Stop at the first repeated insertion."
+  ],
+  "hints": [
+    "Use a set of seen numbers.",
+    "HashSet.add returns false when the value was already present.",
+    "Do not sort unless you also want to discuss the time trade-off."
+  ],
   "tests": [
-    {"name": "yes", "call": "String.valueOf(new Solution().hasDuplicate(new int[]{1,2,3,1}))", "expect": "true"},
-    {"name": "no", "call": "String.valueOf(new Solution().hasDuplicate(new int[]{1,2,3,4}))", "expect": "false"},
-    {"name": "adjacent", "call": "String.valueOf(new Solution().hasDuplicate(new int[]{5,5}))", "expect": "true"},
-    {"name": "empty", "call": "String.valueOf(new Solution().hasDuplicate(new int[]{}))", "expect": "false"},
-    {"name": "single", "call": "String.valueOf(new Solution().hasDuplicate(new int[]{7}))", "expect": "false"},
-    {"name": "negative", "call": "String.valueOf(new Solution().hasDuplicate(new int[]{-1,0,-1}))", "expect": "true"}
+    {
+      "name": "yes",
+      "call": "String.valueOf(new Solution().hasDuplicate(new int[]{1,2,3,1}))",
+      "expect": "true"
+    },
+    {
+      "name": "no",
+      "call": "String.valueOf(new Solution().hasDuplicate(new int[]{1,2,3,4}))",
+      "expect": "false"
+    },
+    {
+      "name": "adjacent",
+      "call": "String.valueOf(new Solution().hasDuplicate(new int[]{5,5}))",
+      "expect": "true"
+    },
+    {
+      "name": "empty",
+      "call": "String.valueOf(new Solution().hasDuplicate(new int[]{}))",
+      "expect": "false"
+    },
+    {
+      "name": "single",
+      "call": "String.valueOf(new Solution().hasDuplicate(new int[]{7}))",
+      "expect": "false"
+    },
+    {
+      "name": "negative",
+      "call": "String.valueOf(new Solution().hasDuplicate(new int[]{-1,0,-1}))",
+      "expect": "true"
+    }
+  ],
+  "theory": [
+    "hash-set"
   ]
 }

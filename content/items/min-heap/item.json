@@ -6,20 +6,66 @@
   "difficulty": "medium",
   "className": "MinHeap",
   "pattern": "heap",
-  "statement": "Build a binary min-heap with push, pop, and size. pop removes and returns the smallest value.",
-  "constraints": ["pop on an empty heap throws IllegalStateException.", "Use an array, not a library heap."],
-  "complexity": {"time": "O(log n) push and pop", "space": "O(n)"},
-  "concepts": ["heap"],
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/PriorityQueue.html"],
+  "statement": "Start simple: Build a binary min-heap with push, pop, and size. pop removes and returns the smallest value. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "constraints": [
+    "pop on an empty heap throws IllegalStateException.",
+    "Use an array, not a library heap."
+  ],
+  "complexity": {
+    "time": "O(log n) push and pop",
+    "space": "O(n)"
+  },
+  "concepts": [
+    "heap"
+  ],
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/PriorityQueue.html"
+  ],
   "verified": "2026-10-30",
-  "think": ["The smallest value stays at index 0.", "Children of index i are 2i+1 and 2i+2.", "Push places the value at the end and swaps it upward while it is smaller than its parent.", "Pop saves the root, moves the last value there, and swaps it downward."],
-  "hints": ["Parent of i is (i - 1) / 2.", "After removing the root, shrink the size before sifting down.", "Swap only while the heap property is broken."],
+  "think": [
+    "The smallest value stays at index 0.",
+    "Children of index i are 2i+1 and 2i+2.",
+    "Push places the value at the end and swaps it upward while it is smaller than its parent.",
+    "Pop saves the root, moves the last value there, and swaps it downward."
+  ],
+  "hints": [
+    "Parent of i is (i - 1) / 2.",
+    "After removing the root, shrink the size before sifting down.",
+    "Swap only while the heap property is broken."
+  ],
   "tests": [
-    {"name": "sorted", "call": "{ MinHeap h = new MinHeap(); h.push(3); h.push(1); h.push(2); return h.pop() + \",\" + h.pop() + \",\" + h.pop(); }", "expect": "1,2,3"},
-    {"name": "size", "call": "{ MinHeap h = new MinHeap(); h.push(2); h.push(1); return String.valueOf(h.size()); }", "expect": "2"},
-    {"name": "duplicates", "call": "{ MinHeap h = new MinHeap(); h.push(2); h.push(2); return h.pop() + \":\" + h.size(); }", "expect": "2:1"},
-    {"name": "negative", "call": "{ MinHeap h = new MinHeap(); h.push(4); h.push(-1); return String.valueOf(h.pop()); }", "expect": "-1"},
-    {"name": "many", "call": "{ MinHeap h = new MinHeap(); for (int i = 10; i >= 1; i--) h.push(i); return String.valueOf(h.pop()); }", "expect": "1"},
-    {"name": "remaining", "call": "{ MinHeap h = new MinHeap(); h.push(5); h.push(1); h.pop(); return String.valueOf(h.pop()); }", "expect": "5"}
+    {
+      "name": "sorted",
+      "call": "{ MinHeap h = new MinHeap(); h.push(3); h.push(1); h.push(2); return h.pop() + \",\" + h.pop() + \",\" + h.pop(); }",
+      "expect": "1,2,3"
+    },
+    {
+      "name": "size",
+      "call": "{ MinHeap h = new MinHeap(); h.push(2); h.push(1); return String.valueOf(h.size()); }",
+      "expect": "2"
+    },
+    {
+      "name": "duplicates",
+      "call": "{ MinHeap h = new MinHeap(); h.push(2); h.push(2); return h.pop() + \":\" + h.size(); }",
+      "expect": "2:1"
+    },
+    {
+      "name": "negative",
+      "call": "{ MinHeap h = new MinHeap(); h.push(4); h.push(-1); return String.valueOf(h.pop()); }",
+      "expect": "-1"
+    },
+    {
+      "name": "many",
+      "call": "{ MinHeap h = new MinHeap(); for (int i = 10; i >= 1; i--) h.push(i); return String.valueOf(h.pop()); }",
+      "expect": "1"
+    },
+    {
+      "name": "remaining",
+      "call": "{ MinHeap h = new MinHeap(); h.push(5); h.push(1); h.pop(); return String.valueOf(h.pop()); }",
+      "expect": "5"
+    }
+  ],
+  "theory": [
+    "heap"
   ]
 }

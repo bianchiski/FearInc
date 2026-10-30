@@ -36,9 +36,23 @@ public final class Catalog {
     try {
       JSONObject item = new JSONObject(Files.readString(path));
       Path directory = path.getParent();
+      if (item.has("theory")) {
+        StringBuilder theoryText = new StringBuilder();
+        for (Object topic : item.getJSONArray("theory")) {
+          Path theory = directory.getParent().getParent()
+              .resolve("theory").resolve(topic.toString()).resolve("theory.md");
+          if (Files.exists(theory)) {
+            if (theoryText.length() > 0) theoryText.append("\n\n---\n\n");
+            theoryText.append(Files.readString(theory));
+          }
+        }
+        if (theoryText.length() > 0) item.put("theoryText", theoryText.toString());
+      }
       Path reference = directory.resolve("reference.java");
+      Path solutionC = directory.resolve("solution.c");
       Path starter = directory.resolve("starter.java");
       if (Files.exists(reference)) item.put("reference", Files.readString(reference));
+      if (Files.exists(solutionC)) item.put("solutionC", Files.readString(solutionC));
       if (Files.exists(starter)) item.put("starter", Files.readString(starter));
       return item;
     } catch (IOException exception) {
@@ -53,6 +67,10 @@ public final class Catalog {
         if (!item.has(field) || item.get(field).toString().isBlank()) {
           throw new IllegalStateException(item.optString("id", "unknown") + " is missing " + field);
         }
+      }
+      if (!item.has("theory") || item.getJSONArray("theory").isEmpty()
+          || !item.has("theoryText") || item.getString("theoryText").isBlank()) {
+        throw new IllegalStateException(item.getString("id") + " needs beginner-friendly theory");
       }
       if (SOURCE_REQUIRED.contains(item.getString("module")) && item.getJSONArray("sources").isEmpty()) {
         throw new IllegalStateException(item.getString("id") + " requires sources");

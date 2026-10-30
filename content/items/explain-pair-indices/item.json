@@ -4,7 +4,17 @@
   "type": "explain",
   "title": "Explain pair indices",
   "prompt": "Set a timer for three minutes. Explain the approach, its time and space, one trade-off, and one edge case. Then score yourself honestly.",
-  "rubric": ["Approach", "Complexity", "Trade-off", "Edge case"],
-  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html"],
-  "verified": "2026-10-30"
+  "rubric": [
+    "Approach",
+    "Complexity",
+    "Trade-off",
+    "Edge case"
+  ],
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html"
+  ],
+  "verified": "2026-10-30",
+  "theory": [
+    "hash-map"
+  ]
 }
