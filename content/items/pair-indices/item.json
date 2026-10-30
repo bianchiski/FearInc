@@ -6,7 +6,7 @@
   "difficulty": "easy",
   "className": "Solution",
   "pattern": "hash-map",
-  "statement": "Start simple: Return the indexes of two different values that add up to the target. If none exist, return [-1, -1]. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Return the indexes of two different values that add up to the target. If none exist, return [-1, -1]. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "There is at most one answer.",
     "The same index cannot be used twice."

@@ -1,5 +1,5 @@
 {
   "cadence": ["Monday: one judged problem", "Wednesday: one judged problem", "Friday: one judged problem", "Saturday: due reviews only", "Sunday: explain-aloud mock, hints disabled"],
   "dailyMinutes": 30,
-  "target": "Pass the data-structures module, then one learning module per week."
+  "target": "Pass data structures, including graph search, then the patterns module."
 }

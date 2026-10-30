@@ -6,7 +6,7 @@
   "difficulty": "easy",
   "className": "Solution",
   "pattern": "binary-search",
-  "statement": "Start simple: Return the index of target in a sorted ascending array, or -1 when it is absent. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Return the index of target in a sorted ascending array, or -1 when it is absent. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "The array contains no duplicates.",
     "Use the shrinking-range form of binary search."

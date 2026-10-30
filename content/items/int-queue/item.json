@@ -6,7 +6,7 @@
   "difficulty": "medium",
   "className": "IntQueue",
   "pattern": "queue",
-  "statement": "Start simple: Build an integer queue with enqueue, dequeue, and size. The oldest value leaves first. Use a circular buffer and grow it without losing order. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Build an integer queue with enqueue, dequeue, and size. The oldest value leaves first. Use a circular buffer and grow it without losing order. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "dequeue on an empty queue throws IllegalStateException."
   ],

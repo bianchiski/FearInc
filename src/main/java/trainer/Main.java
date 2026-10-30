@@ -2,10 +2,13 @@ package trainer;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executors;
 
 import org.json.JSONArray;
@@ -25,7 +28,7 @@ public final class Main {
       System.out.println("Self-check passed for every reference solution.");
       return;
     }
-    HttpServer server = HttpServer.create(new InetSocketAddress(8787), 0);
+    HttpServer server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 8787), 0);
     server.createContext("/", Main::page);
     server.createContext("/api/catalog", exchange -> json(exchange, 200, publicCatalog().toString()));
     server.createContext("/api/judge", Main::judge);
@@ -59,7 +62,10 @@ public final class Main {
     try {
       JSONObject result = Judge.run(item, request.getString("source"));
       int hints = request.optInt("hintsUsed", 0);
-      if (result.optBoolean("ok")) Store.recordJudge(item.getString("id"), result.getInt("passed"), result.getInt("total"), hints);
+      if (result.optBoolean("ok")) {
+        Store.recordJudge(item.getString("id"), result.getInt("passed"), result.getInt("total"), hints);
+        if (item.has("solutionC")) result.put("solutionC", item.getString("solutionC"));
+      }
       int quality = !result.optBoolean("ok") ? 1 : hints == 0 ? 5 : hints == 1 ? 4 : 3;
       result.put("review", Store.review(item.getString("id"), quality));
       json(exchange, 200, result.toString());
@@ -109,15 +115,12 @@ public final class Main {
   private static JSONObject publicCatalog() {
     JSONArray items = new JSONArray();
     boolean aiDrills = Store.settings().optBoolean("aiDrills", false);
+    Set<String> mastered = new HashSet<>();
+    for (Object value : Store.mastered()) mastered.add(String.valueOf(value));
     for (Object value : catalog.getJSONArray("items")) {
-      JSONObject item = new JSONObject(value.toString());
+      JSONObject item = (JSONObject) value;
       if (item.optBoolean("aiStyled", false) && !aiDrills) continue;
-      item.remove("reference");
-      item.remove("tests");
-      item.remove("answer");
-      if (item.has("hints")) item.put("hintCount", item.getJSONArray("hints").length()).remove("hints");
-      if ("drill".equals(item.optString("type")) && item.optBoolean("aiStyled", false)) item.put("optionalAi", true);
-      items.put(item);
+      items.put(Catalog.redact(item, mastered.contains(item.getString("id"))));
     }
     return new JSONObject()
         .put("modules", catalog.getJSONArray("modules"))

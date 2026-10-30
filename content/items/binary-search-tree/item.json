@@ -6,7 +6,7 @@
   "difficulty": "medium",
   "className": "Bst",
   "pattern": "tree",
-  "statement": "Start simple: Build a binary search tree with insert, contains, and inorder. inorder returns values separated by spaces. Inserting a duplicate does nothing. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Build a binary search tree with insert, contains, and inorder. inorder returns values separated by spaces. Inserting a duplicate does nothing. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "Smaller values go left.",
     "An empty tree has an empty inorder string."

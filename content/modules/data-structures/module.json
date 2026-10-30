@@ -10,11 +10,12 @@
   "problems": [
     {"id":"dynamic-array","difficulty":"easy","tests":6,"hints":3,"complexity":"amortized O(1) append, O(n) resize"},
     {"id":"linked-list","difficulty":"easy","tests":6,"hints":3,"complexity":"O(1) head insert, O(n) search"},
-    {"id":"queue","difficulty":"easy","tests":6,"hints":3,"complexity":"O(1) enqueue/dequeue"},
-    {"id":"hash-table","difficulty":"medium","tests":6,"hints":3,"complexity":"average O(1) lookup"},
+    {"id":"int-stack","difficulty":"easy","tests":6,"hints":3,"complexity":"O(1) push/pop"},
+    {"id":"int-queue","difficulty":"easy","tests":6,"hints":3,"complexity":"O(1) enqueue/dequeue"},
+    {"id":"open-map","difficulty":"medium","tests":6,"hints":3,"complexity":"average O(1) lookup"},
     {"id":"min-heap","difficulty":"medium","tests":6,"hints":3,"complexity":"O(log n) insert/remove"},
     {"id":"binary-search-tree","difficulty":"medium","tests":6,"hints":3,"complexity":"O(h) search"},
-    {"id":"trie","difficulty":"medium","tests":6,"hints":3,"complexity":"O(word length) lookup"}
+    {"id":"graph-search","difficulty":"medium","tests":6,"hints":3,"complexity":"O(V+E) search"}
   ],
   "quality": {"hints": 3, "edgeTests": 2, "referenceSolution": true}
 }

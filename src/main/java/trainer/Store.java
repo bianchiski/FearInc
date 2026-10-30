@@ -21,7 +21,7 @@ public final class Store {
 
   public static void init() {
     try (Connection connection = open(); Statement statement = connection.createStatement()) {
-      statement.executeUpdate("create table if not exists progress(item text primary key, score int default 0, due text)");
+      statement.executeUpdate("drop table if exists progress");
       statement.executeUpdate("create table if not exists attempts(id integer primary key, item text, outcome text, mistake text, created text)");
       statement.executeUpdate("create table if not exists settings(name text primary key, value text not null)");
       statement.executeUpdate("""
@@ -140,15 +140,6 @@ public final class Store {
         upsert.setString(5, due);
         upsert.setInt(6, quality);
         upsert.executeUpdate();
-      }
-      try (PreparedStatement progress = connection.prepareStatement("""
-          insert into progress(item,score,due) values(?,?,?)
-          on conflict(item) do update set score=excluded.score,due=excluded.due
-          """)) {
-        progress.setString(1, item);
-        progress.setInt(2, quality >= 4 ? 1 : 0);
-        progress.setString(3, due);
-        progress.executeUpdate();
       }
       return new JSONObject().put("item", item).put("quality", quality).put("due", due).put("intervalDays", interval);
     } catch (SQLException exception) {

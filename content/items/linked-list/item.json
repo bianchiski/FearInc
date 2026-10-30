@@ -6,7 +6,7 @@
   "difficulty": "easy",
   "className": "LinkedList",
   "pattern": "nodes",
-  "statement": "Start simple: Build a singly linked list with addFirst, addLast, removeFirst, and values. values returns the comma-separated contents from head to tail, or an empty string. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Build a singly linked list with addFirst, addLast, removeFirst, and values. values returns the comma-separated contents from head to tail, or an empty string. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "Use an explicit node type.",
     "removeFirst on an empty list returns null."

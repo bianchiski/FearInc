@@ -6,7 +6,7 @@
   "difficulty": "easy",
   "className": "Solution",
   "pattern": "stack",
-  "statement": "Start simple: Return true when every bracket in the text is closed by its matching type in the correct order. Other characters are ignored. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Return true when every bracket in the text is closed by its matching type in the correct order. Other characters are ignored. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "Brackets are ()[]{}.",
     "An empty string is balanced."

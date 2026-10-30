@@ -1,0 +1,68 @@
+{
+  "id": "graph-search",
+  "module": "data-structures",
+  "type": "code-problem",
+  "title": "Graph search",
+  "difficulty": "medium",
+  "className": "Graph",
+  "pattern": "bfs-dfs",
+  "statement": "Start simple: Build an undirected graph. addEdge links two nodes in both directions and keeps neighbors in the order they were added. bfs and dfs return space-separated visit order, and each node is visited once. The theory is optional. The C solution appears after the hidden tests pass.",
+  "constraints": [
+    "Edges are undirected.",
+    "A node that was never added is still a valid search start.",
+    "Follow neighbors in insertion order."
+  ],
+  "complexity": {
+    "time": "O(V+E)",
+    "space": "O(V)"
+  },
+  "concepts": ["graph"],
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayDeque.html"
+  ],
+  "verified": "2026-10-30",
+  "think": [
+    "Each node needs a list of neighbors.",
+    "An undirected edge is stored on both ends.",
+    "Breadth-first search takes a neighbor only after every node already in the queue.",
+    "Mark a node when you first discover it, before it is expanded."
+  ],
+  "hints": [
+    "Use a queue for bfs and recursion, or a stack, for dfs.",
+    "addEdge must append to both neighbor lists.",
+    "A visited set stops a cycle from being walked twice."
+  ],
+  "tests": [
+    {
+      "name": "bfs-line",
+      "call": "{ Graph g = new Graph(); g.addEdge(0,1); g.addEdge(1,2); return g.bfs(0); }",
+      "expect": "0 1 2"
+    },
+    {
+      "name": "branch-orders",
+      "call": "{ Graph g = new Graph(); g.addEdge(0,1); g.addEdge(0,2); g.addEdge(1,3); return g.bfs(0) + \"/\" + g.dfs(0); }",
+      "expect": "0 1 2 3/0 1 3 2"
+    },
+    {
+      "name": "disconnected",
+      "call": "{ Graph g = new Graph(); g.addEdge(0,1); g.addEdge(2,3); return g.bfs(0); }",
+      "expect": "0 1"
+    },
+    {
+      "name": "cycle",
+      "call": "{ Graph g = new Graph(); g.addEdge(0,1); g.addEdge(1,2); g.addEdge(2,0); return g.bfs(0); }",
+      "expect": "0 1 2"
+    },
+    {
+      "name": "isolated",
+      "call": "{ Graph g = new Graph(); return g.dfs(4); }",
+      "expect": "4"
+    },
+    {
+      "name": "duplicate-edge",
+      "call": "{ Graph g = new Graph(); g.addEdge(0,1); g.addEdge(0,1); return g.bfs(0); }",
+      "expect": "0 1"
+    }
+  ],
+  "theory": ["graph"]
+}

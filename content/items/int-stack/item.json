@@ -6,7 +6,7 @@
   "difficulty": "easy",
   "className": "IntStack",
   "pattern": "stack",
-  "statement": "Start simple: Build an integer stack with push, pop, and size. pop returns the most recently pushed value. Grow the backing storage when needed. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Build an integer stack with push, pop, and size. pop returns the most recently pushed value. Grow the backing storage when needed. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "pop on an empty stack throws IllegalStateException.",
     "The last pushed value is the first returned."

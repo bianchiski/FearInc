@@ -1,0 +1,43 @@
+{
+  "id": "climbing-stairs",
+  "module": "patterns",
+  "type": "code-problem",
+  "title": "Climbing stairs",
+  "difficulty": "easy",
+  "className": "Solution",
+  "pattern": "dynamic-programming",
+  "statement": "Start simple: Return how many ways you can climb exactly steps stairs, taking 1 or 2 steps at a time. Zero steps has one way: do nothing. The theory is optional. The C solution appears after the hidden tests pass.",
+  "constraints": [
+    "steps is at least 0.",
+    "Each move is 1 or 2 steps."
+  ],
+  "complexity": {
+    "time": "O(n)",
+    "space": "O(1)"
+  },
+  "concepts": ["dynamic-programming"],
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html"
+  ],
+  "verified": "2026-10-30",
+  "think": [
+    "Write the ways for 0, 1, and 2 by hand.",
+    "The last move is either one step or two steps.",
+    "ways(n) is ways(n-1) plus ways(n-2).",
+    "Only the previous two answers are needed for the next one."
+  ],
+  "hints": [
+    "The base cases are ways(0) = 1 and ways(1) = 1.",
+    "Each later answer is the sum of the two before it.",
+    "Two variables replace an array of every step."
+  ],
+  "tests": [
+    {"name": "zero", "call": "String.valueOf(new Solution().ways(0))", "expect": "1"},
+    {"name": "one", "call": "String.valueOf(new Solution().ways(1))", "expect": "1"},
+    {"name": "two", "call": "String.valueOf(new Solution().ways(2))", "expect": "2"},
+    {"name": "three", "call": "String.valueOf(new Solution().ways(3))", "expect": "3"},
+    {"name": "four", "call": "String.valueOf(new Solution().ways(4))", "expect": "5"},
+    {"name": "five", "call": "String.valueOf(new Solution().ways(5))", "expect": "8"}
+  ],
+  "theory": ["dynamic-programming"]
+}

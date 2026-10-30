@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -25,50 +27,67 @@ public final class Judge {
         return failure("Rejected local-only safeguard: " + blocked);
       }
     }
-    if (!source.contains("class Solution") && !source.contains("class DynamicArray")
-        && !source.contains("class LinkedList") && !source.contains("class IntStack")
-        && !source.contains("class IntQueue") && !source.contains("class OpenMap")
-        && !source.contains("class MinHeap") && !source.contains("class Bst")) {
-      return failure("The submitted file does not declare the required class.");
+    String className = item.getString("className");
+    if (!declaresClass(source, className)) {
+      return failure("The submitted file does not declare class " + className + ".");
     }
     Path directory = Files.createTempDirectory("trainer-judge-");
-    String className = item.getString("className");
-    Files.writeString(directory.resolve(className + ".java"), source);
-    Files.writeString(directory.resolve("Harness.java"), harness(item));
-    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-    if (compiler == null) return failure("No Java compiler is available. Run the trainer with a JDK, not a JRE.");
-    java.io.ByteArrayOutputStream errors = new java.io.ByteArrayOutputStream();
-    int compiled = compiler.run(null, null, errors, "-d", directory.toString(),
-        directory.resolve(className + ".java").toString(), directory.resolve("Harness.java").toString());
-    if (compiled != 0) return failure(errors.toString(StandardCharsets.UTF_8));
+    try {
+      Files.writeString(directory.resolve(className + ".java"), source);
+      Files.writeString(directory.resolve("Harness.java"), harness(item));
+      JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+      if (compiler == null) return failure("No Java compiler is available. Run the trainer with a JDK, not a JRE.");
+      java.io.ByteArrayOutputStream errors = new java.io.ByteArrayOutputStream();
+      int compiled = compiler.run(null, null, errors, "-d", directory.toString(),
+          directory.resolve(className + ".java").toString(), directory.resolve("Harness.java").toString());
+      if (compiled != 0) return failure(errors.toString(StandardCharsets.UTF_8));
 
-    Process process = new ProcessBuilder("java", "-Xmx128m", "-cp", directory.toString(), "Harness")
-        .redirectErrorStream(false).start();
-    boolean finished = process.waitFor(5, TimeUnit.SECONDS);
-    if (!finished) {
-      process.destroyForcibly();
-      process.waitFor(2, TimeUnit.SECONDS);
-      return failure("Time limit exceeded");
+      Process process = new ProcessBuilder("java", "-Xmx128m", "-cp", directory.toString(), "Harness")
+          .redirectErrorStream(false).start();
+      boolean finished = process.waitFor(5, TimeUnit.SECONDS);
+      if (!finished) {
+        process.destroyForcibly();
+        process.waitFor(2, TimeUnit.SECONDS);
+        return failure("Time limit exceeded");
+      }
+      String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+      String error = new String(process.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
+      JSONArray tests = new JSONArray();
+      int passed = 0;
+      for (String line : output.split("\\R")) {
+        String[] parts = line.split("\t", 4);
+        if (parts.length < 2 || (!parts[0].equals("PASS") && !parts[0].equals("FAIL"))) continue;
+        boolean ok = parts[0].equals("PASS");
+        if (ok) passed++;
+        JSONObject test = new JSONObject().put("name", parts[1]).put("passed", ok);
+        if (parts.length > 2) test.put("detail", parts[2]);
+        tests.put(test);
+      }
+      return new JSONObject()
+          .put("ok", passed == item.getJSONArray("tests").length() && tests.length() == item.getJSONArray("tests").length())
+          .put("passed", passed)
+          .put("total", item.getJSONArray("tests").length())
+          .put("tests", tests)
+          .put("stderr", error);
+    } finally {
+      deleteTree(directory);
     }
-    String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-    String error = new String(process.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
-    JSONArray tests = new JSONArray();
-    int passed = 0;
-    for (String line : output.split("\\R")) {
-      String[] parts = line.split("\t", 4);
-      if (parts.length < 2 || (!parts[0].equals("PASS") && !parts[0].equals("FAIL"))) continue;
-      boolean ok = parts[0].equals("PASS");
-      if (ok) passed++;
-      JSONObject test = new JSONObject().put("name", parts[1]).put("passed", ok);
-      if (parts.length > 2) test.put("detail", parts[2]);
-      tests.put(test);
+  }
+
+  private static boolean declaresClass(String source, String className) {
+    return Pattern.compile("\\bclass\\s+" + Pattern.quote(className) + "\\b").matcher(source).find();
+  }
+
+  private static void deleteTree(Path root) {
+    try {
+      List<Path> paths;
+      try (var walk = Files.walk(root)) {
+        paths = walk.sorted(Comparator.reverseOrder()).toList();
+      }
+      for (Path path : paths) Files.deleteIfExists(path);
+    } catch (IOException ignored) {
+      // A leftover temp directory is less important than the judge result.
     }
-    return new JSONObject()
-        .put("ok", passed == item.getJSONArray("tests").length() && tests.length() == item.getJSONArray("tests").length())
-        .put("passed", passed)
-        .put("total", item.getJSONArray("tests").length())
-        .put("tests", tests)
-        .put("stderr", error);
   }
 
   private static JSONObject failure(String message) {

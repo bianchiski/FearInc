@@ -6,7 +6,7 @@
   "difficulty": "easy",
   "className": "DynamicArray",
   "pattern": "array",
-  "statement": "Start simple: Build a growable integer array with add, get, and size. Adding past capacity must preserve every existing value. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Build a growable integer array with add, get, and size. Adding past capacity must preserve every existing value. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "Start with a small backing array.",
     "get rejects an index outside the logical size."

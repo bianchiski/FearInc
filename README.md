@@ -8,12 +8,8 @@ Local Java trainer with hidden tests, spaced repetition, source-checked lessons,
 mvn compile exec:java
 ```
 
-Open http://localhost:8787.
+Open http://localhost:8787. The server listens on 127.0.0.1 only.
 
-Check every reference solution:
+`mvn test` checks every reference solution and checks that the C solution stays hidden until a problem is solved. `mvn -q compile exec:java "-Dexec.args=--self-check"` still runs the reference check on its own.
 
-```powershell
-mvn -q compile exec:java "-Dexec.args=--self-check"
-```
-
-Content lives in `content/items/<id>`. A code problem needs a statement, constraints, six tests, three hints, a walkthrough, complexity, sources, and `reference.java`. AWS, security, and Spring items are rejected when sources are missing.
+Content lives in `content/items/<id>`. `catalog.json` lists every item id, and a `module.json` problem id must match an item in that module. A code problem needs a statement, constraints, six tests, three hints, a walkthrough, complexity, sources, `className`, and `reference.java`. AWS, security, and Spring items are rejected when sources are missing. The C solution is sent only after the hidden tests pass, or when that item is already mastered.

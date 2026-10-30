@@ -1,18 +1,5 @@
 # Module content format
 
-Each module may be expanded into its own folder with a `module.yaml` and Markdown lessons:
+`catalog.json` is the syllabus. Each module `items` entry is an item id that must exist at `content/items/<id>/item.json`, and every item on disk must be listed.
 
-```yaml
-id: data-structures
-title: Data Structures from Scratch
-track: Core
-items:
-  - type: lesson
-    id: linked-list-nodes
-  - type: code-problem
-    id: implement-linked-list
-  - type: quiz
-    id: node-invariants
-```
-
-The server currently loads the catalog index and stores attempts/progress in SQLite. This format keeps content independent from application code.
+A `module.json` `problems` list is checked the same way. An id there must be a real item in that module.

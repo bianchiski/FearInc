@@ -47,7 +47,7 @@
 <script>
 let catalog, current, hintsUsed = 0, thinkAt = 0;
 const $ = id => document.getElementById(id);
-async function load() {
+async function load(selectId) {
   catalog = await (await fetch('/api/catalog')).json();
   $('ai').checked = !!catalog.settings.aiDrills;
   $('planner').innerHTML = catalog.planner.cadence.map(x => `<div>${x}</div>`).join('') + `<p>${catalog.planner.target}</p>`;
@@ -62,7 +62,8 @@ async function load() {
     previousReady = gradable.length === 0 || passed / gradable.length >= 0.7;
     return `<h3>${open ? '' : 'Locked · '}${module.title}</h3>` + (open ? items : []).map(item => `<button class="item" onclick="openItem('${item.id}')">${mastered.has(item.id) ? '● ' : ''}${item.title}</button>`).join('');
   }).join('');
-  openItem(catalog.items.find(item => item.type === 'code-problem').id);
+  const next = selectId || (current && current.id) || catalog.items.find(item => item.type === 'code-problem').id;
+  openItem(next);
 }
 function item(id) { return catalog.items.find(x => x.id === id); }
 function theoryHtml(markdown) {
@@ -79,7 +80,7 @@ function theoryHtml(markdown) {
   return `<p>${html}</p>`.replace(/(<li>.*?<\/li>)(?:<br>)?/g, '<ul>$1</ul>');
 }
 function codeHtml(source) {
-  return `<details class="reference-code"><summary>Show optional C solution (reference)</summary><pre>${source.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')}</pre></details>`;
+  return `<details class="reference-code"><summary>C solution (unlocked)</summary><pre>${source.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')}</pre></details>`;
 }
 function openItem(id) {
   current = item(id); hintsUsed = 0; thinkAt = 0;
@@ -110,12 +111,17 @@ async function hint() {
   if (body.hint) { hintsUsed = body.level; $('hint').textContent = `Hint ${body.level}/${body.total}: ${body.hint}`; }
 }
 async function runCode() {
+  const source = $('code').value;
   $('result').textContent = 'Running…';
-  const response = await fetch('/api/judge', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, source:$('code').value, hintsUsed})});
+  const response = await fetch('/api/judge', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, source, hintsUsed})});
   const body = await response.json();
-  $('result').textContent = body.error || body.tests.map(test => `${test.passed ? 'PASS' : 'FAIL'} ${test.name} ${test.detail || ''}`).join('\n');
-  $('result').className = body.ok ? 'ok' : 'bad';
-  if (body.ok) load();
+  const text = body.error || body.tests.map(test => `${test.passed ? 'PASS' : 'FAIL'} ${test.name} ${test.detail || ''}`).join('\n');
+  if (!body.ok) { $('result').textContent = text; $('result').className = 'bad'; return; }
+  const id = current.id;
+  await load(id);
+  $('code').value = source;
+  $('result').textContent = text;
+  $('result').className = 'ok';
 }
 async function answer(value) {
   const response = await fetch('/api/check', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, answer:value})});

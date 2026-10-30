@@ -6,7 +6,7 @@
   "difficulty": "medium",
   "className": "OpenMap",
   "pattern": "hash-map",
-  "statement": "Start simple: Build a string-to-int map with put, get, contains, and size. Collisions chain in buckets. Putting an existing key replaces its value and does not change size. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Build a string-to-int map with put, get, contains, and size. Collisions chain in buckets. Putting an existing key replaces its value and does not change size. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "Keys are non-null.",
     "get throws NoSuchElementException when absent.",

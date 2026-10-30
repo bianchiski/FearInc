@@ -1,42 +1,16 @@
 {
   "settings": {"aiDrills": false, "aiFeedback": false},
   "modules": [
-    {"id":"foundations","title":"Foundations","track":"Core","items":["Big-O","Binary and modular arithmetic","Reading code"]},
-    {"id":"data-structures","title":"Data Structures from Scratch","track":"Core","items":["Dynamic arrays","Nodes and linked lists","Stacks and queues","Hash tables","Heaps","Trees","Graphs","Union-find"]},
-    {"id":"patterns","title":"Algorithm Patterns","track":"Core","items":["Two pointers","Sliding window","Binary search","BFS and DFS","Dynamic programming","Backtracking","Intervals"]},
-    {"id":"low-level-java","title":"Low-level Java","track":"Core","items":["Bits and overflow","equals and hashCode","HashMap internals","JVM memory","Concurrency"]},
-    {"id":"systems","title":"Systems and Very Low Level","track":"Core","items":["Endianness","Cache locality","ByteBuffer","TCP and HTTP","Processes"]},
-    {"id":"sql","title":"SQL and Databases","track":"Fullstack","items":["Joins","Indexes","Transactions","Query plans"]},
-    {"id":"spring","title":"Spring Boot","track":"Fullstack","items":["REST layers","Dependency injection","JPA","Testing"]},
-    {"id":"typescript-react","title":"TypeScript and React","track":"Fullstack","items":["Types","Rendering","State and hooks","Framework architecture"]},
-    {"id":"aws","title":"AWS","track":"Cloud","items":["IAM","VPC","EC2","S3","RDS","Lambda","CloudFront"]},
-    {"id":"security","title":"Security","track":"Cloud","items":["OAuth and JWT","OWASP","Secure Java","Secrets","Least privilege"]},
-    {"id":"devops","title":"DevOps","track":"Cloud","items":["Git","Docker","CI/CD","Terraform"]}
-  ],
-  "drills": [
-    {"id":"bug-hashmap","type":"find-the-bug","title":"Find the bug: duplicate handling","prompt":"A HashMap solution overwrites an index before checking its complement. Identify the failing input and explain why."},
-    {"id":"break-two-sum","type":"write-a-test","title":"Write the breaking test","prompt":"Create the smallest test that distinguishes a nested-loop solution from an O(n) solution."},
-    {"id":"safe-diff","type":"review","title":"Is this diff safe to merge?","prompt":"Review a change that removes null validation from a public method. List the risk, test, and safer alternative."},
-    {"id":"debug-stacktrace","type":"debug","title":"Read the stack trace","prompt":"Trace a NullPointerException to its first invalid assumption, then propose a regression test."},
-    {"id":"design-orders","type":"system-design","title":"Design an order status API","prompt":"Choose API boundaries, persistence, idempotency, retries, and observability."}
-  ],
-  "concepts": [
-    {"id":"big-o","title":"Big-O","text":"Big-O describes how work grows with input size. A single pass is O(n); nested passes are often O(n²)."},
-    {"id":"arrays","title":"Arrays and strings","text":"Arrays give O(1) indexed access. Strings are immutable; use StringBuilder for repeated concatenation."},
-    {"id":"hashmaps","title":"Hash maps","text":"HashMap stores key/value pairs with average O(1) lookup. Always ask what the key should represent."},
-    {"id":"stacks","title":"Stacks and queues","text":"ArrayDeque supports push/pop at the ends. Use a queue for BFS and a stack for DFS."},
-    {"id":"recursion","title":"Recursion","text":"Define a base case, make progress toward it, and combine the returned result."}
-  ],
-  "problems": [
-    {"id":"two-sum","title":"Two Sum","difficulty":"easy","pattern":"hash-map","concepts":["hashmaps","big-o"]},
-    {"id":"valid-anagram","title":"Valid Anagram","difficulty":"easy","pattern":"hash-map","concepts":["hashmaps","arrays"]},
-    {"id":"valid-parentheses","title":"Valid Parentheses","difficulty":"easy","pattern":"stack","concepts":["stacks"]},
-    {"id":"binary-search","title":"Binary Search","difficulty":"easy","pattern":"binary-search","concepts":["arrays","big-o"]},
-    {"id":"best-time-stock","title":"Best Time to Buy and Sell Stock","difficulty":"easy","pattern":"sliding-window","concepts":["arrays","big-o"]},
-    {"id":"contains-duplicate","title":"Contains Duplicate","difficulty":"easy","pattern":"set","concepts":["hashmaps"]},
-    {"id":"reverse-list","title":"Reverse Linked List","difficulty":"easy","pattern":"pointers","concepts":["arrays"]},
-    {"id":"maximum-subarray","title":"Maximum Subarray","difficulty":"medium","pattern":"dynamic-programming","concepts":["big-o"]},
-    {"id":"number-islands","title":"Number of Islands","difficulty":"medium","pattern":"bfs-dfs","concepts":["recursion","stacks"]},
-    {"id":"climbing-stairs","title":"Climbing Stairs","difficulty":"easy","pattern":"dynamic-programming","concepts":["recursion","big-o"]}
+    {"id":"foundations","title":"Foundations","track":"Core","items":["big-o-reading","pair-indices","explain-pair-indices","duplicate-values","sorted-search","bracket-balance"]},
+    {"id":"data-structures","title":"Data Structures from Scratch","track":"Core","items":["dynamic-array","linked-list","int-stack","int-queue","open-map","min-heap","binary-search-tree","graph-search","debug-empty-pop"]},
+    {"id":"patterns","title":"Algorithm Patterns","track":"Core","items":["fixed-window-sum","climbing-stairs","bug-complement-order","ai-style-review"]},
+    {"id":"low-level-java","title":"Low-level Java","track":"Core","items":["hashmap-shape"]},
+    {"id":"systems","title":"Systems and Very Low Level","track":"Core","items":["byte-order"]},
+    {"id":"sql","title":"SQL and Databases","track":"Fullstack","items":["sql-index-choice"]},
+    {"id":"spring","title":"Spring Boot","track":"Fullstack","items":["spring-constructor","design-order-api"]},
+    {"id":"typescript-react","title":"TypeScript and React","track":"Fullstack","items":["react-snapshot"]},
+    {"id":"aws","title":"AWS","track":"Cloud","items":["iam-least-privilege"]},
+    {"id":"security","title":"Security","track":"Cloud","items":["owasp-2025-first"]},
+    {"id":"devops","title":"DevOps","track":"Cloud","items":["docker-image-vs-container"]}
   ]
 }

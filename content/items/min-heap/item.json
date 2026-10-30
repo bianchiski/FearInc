@@ -6,7 +6,7 @@
   "difficulty": "medium",
   "className": "MinHeap",
   "pattern": "heap",
-  "statement": "Start simple: Build a binary min-heap with push, pop, and size. pop removes and returns the smallest value. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Build a binary min-heap with push, pop, and size. pop removes and returns the smallest value. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "pop on an empty heap throws IllegalStateException.",
     "Use an array, not a library heap."

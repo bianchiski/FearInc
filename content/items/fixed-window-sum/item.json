@@ -6,7 +6,7 @@
   "difficulty": "easy",
   "className": "Solution",
   "pattern": "sliding-window",
-  "statement": "Start simple: Return the largest sum of any contiguous block of exactly width elements. Read the optional theory and C solution whenever you want a slower, more detailed explanation.",
+  "statement": "Start simple: Return the largest sum of any contiguous block of exactly width elements. The theory is optional. The C solution appears after the hidden tests pass.",
   "constraints": [
     "width is at least 1 and no larger than the array.",
     "Values may be negative."
