@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interview Prep Trainer</title>
+  <style>
+    :root { color: #e9efff; background: #080d18; font: 15px/1.5 Inter, Segoe UI, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse 80% 40% at 80% -10%, #1a3560, transparent 50%), #080d18; }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 20px 5vw; border-bottom: 1px solid #2b416a; background: #0d1628dd; }
+    h1 { margin: 0; font-size: 22px; } h2 { margin: 6px 0 10px; font-size: 28px; } h3 { margin: 0 0 10px; color: #91a9d5; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; }
+    main { max-width: 1240px; margin: 28px auto; padding: 0 24px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 24px; }
+    .panel { background: linear-gradient(160deg, #17243b, #101a2c); border: 1px solid #2b416a; border-radius: 18px; padding: 18px; margin-bottom: 16px; }
+    button, .item { border: 0; border-radius: 10px; background: #6e8cff; color: white; padding: 9px 12px; margin: 4px; cursor: pointer; }
+    button.secondary, .item { background: #1b2d4d; color: #d5e2ff; text-align: left; }
+    .item { display: block; width: calc(100% - 8px); }
+    .item.active { outline: 2px solid #6e8cff; }
+    textarea { width: 100%; min-height: 240px; border-radius: 12px; border: 1px solid #304a78; background: #080d17; color: #dce8ff; padding: 14px; font: 13px/1.55 Consolas, monospace; }
+    pre { white-space: pre-wrap; background: #080d17; border-radius: 12px; padding: 12px; }
+    .muted { color: #8fa3c9; } .ok { color: #3dd6a0; } .bad { color: #ff8d8d; }
+    @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<header>
+  <div><h1>Interview Prep Trainer</h1><p class="muted">Judged practice, retrieval, and source-checked lessons.</p></div>
+  <label class="muted"><input id="ai" type="checkbox"> Optional AI-style drills</label>
+</header>
+<main>
+  <aside>
+    <div class="panel"><h3>Due</h3><div id="due"></div></div>
+    <div class="panel"><h3>Modules</h3><div id="modules"></div></div>
+    <div class="panel"><h3>Planner</h3><div id="planner" class="muted"></div></div>
+  </aside>
+  <section id="work" class="panel">Loading the catalog…</section>
+</main>
+<script>
+let catalog, current, hintsUsed = 0, thinkAt = 0;
+const $ = id => document.getElementById(id);
+async function load() {
+  catalog = await (await fetch('/api/catalog')).json();
+  $('ai').checked = !!catalog.settings.aiDrills;
+  $('planner').innerHTML = catalog.planner.cadence.map(x => `<div>${x}</div>`).join('') + `<p>${catalog.planner.target}</p>`;
+  $('due').innerHTML = catalog.due.length ? catalog.due.map(x => `<button class="item" onclick="openItem('${x.item}')">${x.item}</button>`).join('') : '<span class="muted">None today.</span>';
+  const mastered = new Set(catalog.mastered);
+  let previousReady = true;
+  $('modules').innerHTML = catalog.modules.map(module => {
+    const items = catalog.items.filter(item => item.module === module.id);
+    const gradable = items.filter(item => item.type !== 'lesson');
+    const passed = gradable.filter(item => mastered.has(item.id)).length;
+    const open = previousReady;
+    previousReady = gradable.length === 0 || passed / gradable.length >= 0.7;
+    return `<h3>${open ? '' : 'Locked · '}${module.title}</h3>` + (open ? items : []).map(item => `<button class="item" onclick="openItem('${item.id}')">${mastered.has(item.id) ? '● ' : ''}${item.title}</button>`).join('');
+  }).join('');
+  openItem(catalog.items.find(item => item.type === 'code-problem').id);
+}
+function item(id) { return catalog.items.find(x => x.id === id); }
+function openItem(id) {
+  current = item(id); hintsUsed = 0; thinkAt = 0;
+  const code = current.type === 'code-problem';
+  const quiz = current.type === 'quiz' || current.type === 'drill';
+  $('work').innerHTML = `
+    <p class="muted">${current.module} · ${current.type}</p>
+    <h2>${current.title}</h2>
+    <p>${current.statement || current.body || current.prompt || ''}</p>
+    ${current.constraints ? `<p class="muted">${current.constraints.join(' ')}</p>` : ''}
+    ${current.complexity ? `<p class="muted">Target: ${current.complexity.time}, ${current.complexity.space}</p>` : ''}
+    ${current.think ? `<h3>Think</h3><p id="think">${current.think[0]}</p><button onclick="nextThink()">Next step</button>` : ''}
+    ${code ? `<button class="secondary" onclick="hint()">Hint</button><p id="hint"></p><textarea id="code"></textarea><button onclick="runCode()">Run hidden tests</button>` : ''}
+    ${quiz ? (current.choices || []).map(choice => `<button class="secondary" onclick="answer('${choice.replaceAll("'", "\\'")}')">${choice}</button>`).join('') + `<p>Or type the exact answer:</p><textarea id="answer"></textarea><button onclick="answer($('answer').value)">Check</button>` : ''}
+    ${current.type === 'explain' ? `<p>${current.rubric.join(' · ')}</p><button onclick="score(5)">I covered all four</button><button class="secondary" onclick="score(3)">I missed one</button><button class="secondary" onclick="score(1)">I could not explain it</button>` : ''}
+    <pre id="result"></pre>
+    <h3>What went wrong?</h3>
+    ${['misread','wrong pattern','edge case','bug','blanked'].map(x => `<button class="secondary" onclick="mistake('${x}')">${x}</button>`).join('')}
+    <p id="status"></p>`;
+  if (code) $('code').value = current.starter || '';
+}
+function nextThink() { thinkAt = Math.min(thinkAt + 1, current.think.length - 1); $('think').textContent = current.think[thinkAt]; }
+async function hint() {
+  const response = await fetch('/api/hint', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, level:hintsUsed})});
+  const body = await response.json();
+  if (body.hint) { hintsUsed = body.level; $('hint').textContent = `Hint ${body.level}/${body.total}: ${body.hint}`; }
+}
+async function runCode() {
+  $('result').textContent = 'Running…';
+  const response = await fetch('/api/judge', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, source:$('code').value, hintsUsed})});
+  const body = await response.json();
+  $('result').textContent = body.error || body.tests.map(test => `${test.passed ? 'PASS' : 'FAIL'} ${test.name} ${test.detail || ''}`).join('\n');
+  $('result').className = body.ok ? 'ok' : 'bad';
+  if (body.ok) load();
+}
+async function answer(value) {
+  const response = await fetch('/api/check', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, answer:value})});
+  const body = await response.json();
+  $('result').textContent = (body.correct ? 'Correct. ' : 'Not yet. ') + body.explanation;
+  $('result').className = body.correct ? 'ok' : 'bad';
+}
+async function score(quality) { await fetch('/api/review', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, quality})}); $('status').textContent = 'Review scheduled.'; }
+async function mistake(type) { const response = await fetch('/api/mistake', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, mistake:type})}); $('status').textContent = 'Logged. Weak spots: ' + (await response.json()).weakSpots.map(x => `${x.mistake} (${x.count})`).join(', '); }
+$('ai').onchange = async event => { await fetch('/api/settings', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({aiDrills:event.target.checked, aiFeedback:false})}); load(); };
+load();
+</script>
+</body>
+</html>

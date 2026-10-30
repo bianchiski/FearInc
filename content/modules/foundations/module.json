@@ -1,0 +1,11 @@
+{
+  "id": "foundations",
+  "title": "Foundations",
+  "verified": "2026-10-30",
+  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/"],
+  "lessons": [
+    {"id":"complexity","title":"Reading Big-O","text":"Count how work grows as input grows. Sequential loops add; nested loops multiply. State time and extra space separately."},
+    {"id":"integer-reasoning","title":"Integer reasoning","text":"Check signs, overflow, modulo behavior, and empty input before coding."}
+  ],
+  "quality": {"hints": 3, "edgeTests": 2, "referenceSolution": true}
+}

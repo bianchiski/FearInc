@@ -1,0 +1,25 @@
+{
+  "id": "int-stack",
+  "module": "data-structures",
+  "type": "code-problem",
+  "title": "Stack from an array",
+  "difficulty": "easy",
+  "className": "IntStack",
+  "pattern": "stack",
+  "statement": "Build an integer stack with push, pop, and size. pop returns the most recently pushed value. Grow the backing storage when needed.",
+  "constraints": ["pop on an empty stack throws IllegalStateException.", "The last pushed value is the first returned."],
+  "complexity": {"time": "amortized O(1) push and pop", "space": "O(n)"},
+  "concepts": ["stack"],
+  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayDeque.html"],
+  "verified": "2026-10-30",
+  "think": ["A stack is a one-end structure.", "The index after the last value is the top.", "Push writes then advances; pop retreats then reads.", "Growth is the same doubling idea as a dynamic array."],
+  "hints": ["Keep the next free index.", "Do not remove a hole in the middle.", "Check emptiness before pop."],
+  "tests": [
+    {"name": "lifo", "call": "{ IntStack s = new IntStack(); s.push(1); s.push(2); return s.pop() + \",\" + s.pop(); }", "expect": "2,1"},
+    {"name": "size", "call": "{ IntStack s = new IntStack(); s.push(4); s.push(5); return String.valueOf(s.size()); }", "expect": "2"},
+    {"name": "after-pop", "call": "{ IntStack s = new IntStack(); s.push(4); s.pop(); return String.valueOf(s.size()); }", "expect": "0"},
+    {"name": "reuse", "call": "{ IntStack s = new IntStack(); s.push(1); s.pop(); s.push(9); return String.valueOf(s.pop()); }", "expect": "9"},
+    {"name": "many", "call": "{ IntStack s = new IntStack(); for (int i = 0; i < 30; i++) s.push(i); return s.pop() + \":\" + s.size(); }", "expect": "29:29"},
+    {"name": "zero", "call": "{ IntStack s = new IntStack(); s.push(0); return String.valueOf(s.pop()); }", "expect": "0"}
+  ]
+}

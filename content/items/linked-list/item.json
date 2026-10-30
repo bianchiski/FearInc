@@ -1,0 +1,25 @@
+{
+  "id": "linked-list",
+  "module": "data-structures",
+  "type": "code-problem",
+  "title": "Singly linked list",
+  "difficulty": "easy",
+  "className": "LinkedList",
+  "pattern": "nodes",
+  "statement": "Build a singly linked list with addFirst, addLast, removeFirst, and values. values returns the comma-separated contents from head to tail, or an empty string.",
+  "constraints": ["Use an explicit node type.", "removeFirst on an empty list returns null."],
+  "complexity": {"time": "O(1) addFirst/removeFirst, O(n) addLast", "space": "O(n)"},
+  "concepts": ["nodes", "linked-list"],
+  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/LinkedList.html"],
+  "verified": "2026-10-30",
+  "think": ["A node holds a value and the next node.", "The list is correct only while head points at the first node.", "addFirst changes head; the old head becomes next.", "addLast walks until next is null, except when the list is empty."],
+  "hints": ["Draw the links before writing the assignment.", "Save the old head before replacing it.", "An empty list is the special case for both ends."],
+  "tests": [
+    {"name": "empty", "call": "new LinkedList().values()", "expect": ""},
+    {"name": "first", "call": "{ LinkedList list = new LinkedList(); list.addFirst(2); list.addFirst(1); return list.values(); }", "expect": "1,2"},
+    {"name": "last", "call": "{ LinkedList list = new LinkedList(); list.addLast(1); list.addLast(2); return list.values(); }", "expect": "1,2"},
+    {"name": "remove", "call": "{ LinkedList list = new LinkedList(); list.addLast(1); list.addLast(2); return list.removeFirst() + \":\" + list.values(); }", "expect": "1:2"},
+    {"name": "remove-empty", "call": "String.valueOf(new LinkedList().removeFirst())", "expect": "null"},
+    {"name": "mixed", "call": "{ LinkedList list = new LinkedList(); list.addFirst(2); list.addLast(3); list.addFirst(1); return list.values(); }", "expect": "1,2,3"}
+  ]
+}

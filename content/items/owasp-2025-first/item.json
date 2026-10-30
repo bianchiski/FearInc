@@ -1,0 +1,12 @@
+{
+  "id": "owasp-2025-first",
+  "module": "security",
+  "type": "quiz",
+  "title": "OWASP Top 10:2025",
+  "prompt": "Which risk is A01 in the OWASP Top 10:2025?",
+  "choices": ["Broken Access Control", "Injection", "Cryptographic Failures"],
+  "answer": "Broken Access Control",
+  "explanation": "OWASP Top 10:2025 keeps Broken Access Control at A01. A02 is Security Misconfiguration and A03 is Software Supply Chain Failures. Injection is A05 in this edition.",
+  "sources": ["https://owasp.org/Top10/2025/"],
+  "verified": "2026-10-30"
+}

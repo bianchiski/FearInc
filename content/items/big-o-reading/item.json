@@ -1,0 +1,9 @@
+{
+  "id": "big-o-reading",
+  "module": "foundations",
+  "type": "lesson",
+  "title": "Reading Big-O",
+  "body": "Big-O bounds how work grows with input size. One loop over n items is O(n). Two nested loops over the same n are O(n^2). A binary search halves the remaining range, so it is O(log n). State time and extra memory separately. HashMap get and put are constant time on average only when hash codes spread keys across buckets.",
+  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html"],
+  "verified": "2026-10-30"
+}

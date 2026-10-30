@@ -1,0 +1,5 @@
+class DynamicArray {
+  public void add(int value) {}
+  public int get(int index) { return 0; }
+  public int size() { return 0; }
+}

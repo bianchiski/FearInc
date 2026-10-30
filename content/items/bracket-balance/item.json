@@ -1,0 +1,25 @@
+{
+  "id": "bracket-balance",
+  "module": "foundations",
+  "type": "code-problem",
+  "title": "Bracket balance",
+  "difficulty": "easy",
+  "className": "Solution",
+  "pattern": "stack",
+  "statement": "Return true when every bracket in the text is closed by its matching type in the correct order. Other characters are ignored.",
+  "constraints": ["Brackets are ()[]{}.", "An empty string is balanced."],
+  "complexity": {"time": "O(n)", "space": "O(n)"},
+  "concepts": ["stack"],
+  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ArrayDeque.html"],
+  "verified": "2026-10-30",
+  "think": ["The most recent open bracket must close first.", "A stack stores unmatched open brackets.", "A close bracket fails when the stack is empty or the types differ.", "The text is balanced only when the stack is empty at the end."],
+  "hints": ["Push opening brackets.", "Compare each closing bracket with the most recent opening bracket.", "Reject a closing bracket when nothing is open."],
+  "tests": [
+    {"name": "simple", "call": "String.valueOf(new Solution().balanced(\"()\"))", "expect": "true"},
+    {"name": "mixed", "call": "String.valueOf(new Solution().balanced(\"({[]})\"))", "expect": "true"},
+    {"name": "wrong-order", "call": "String.valueOf(new Solution().balanced(\"([)]\"))", "expect": "false"},
+    {"name": "unclosed", "call": "String.valueOf(new Solution().balanced(\"((\"))", "expect": "false"},
+    {"name": "extra-close", "call": "String.valueOf(new Solution().balanced(\")\"))", "expect": "false"},
+    {"name": "text", "call": "String.valueOf(new Solution().balanced(\"a(b[c]d)\"))", "expect": "true"}
+  ]
+}

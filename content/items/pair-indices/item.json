@@ -1,0 +1,25 @@
+{
+  "id": "pair-indices",
+  "module": "foundations",
+  "type": "code-problem",
+  "title": "Pair indices",
+  "difficulty": "easy",
+  "className": "Solution",
+  "pattern": "hash-map",
+  "statement": "Return the indexes of two different values that add up to the target. If none exist, return [-1, -1].",
+  "constraints": ["There is at most one answer.", "The same index cannot be used twice."],
+  "complexity": {"time": "O(n)", "space": "O(n)"},
+  "concepts": ["hash-map", "big-o"],
+  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html"],
+  "verified": "2026-10-30",
+  "think": ["Restate: find two indexes, not two values.", "Try every pair and count the comparisons.", "The repeated work is searching for target minus the current value.", "Store each seen value and its index, then check the complement before inserting."],
+  "hints": ["A map from value to index avoids the second scan.", "Check the complement before storing the current value.", "One pass is enough when each value is stored after it is tested."],
+  "tests": [
+    {"name": "basic", "call": "java.util.Arrays.toString(new Solution().pairIndices(new int[]{2,7,11,15}, 9))", "expect": "[0, 1]"},
+    {"name": "negatives", "call": "java.util.Arrays.toString(new Solution().pairIndices(new int[]{-3,4,3,90}, 0))", "expect": "[0, 2]"},
+    {"name": "duplicates", "call": "java.util.Arrays.toString(new Solution().pairIndices(new int[]{3,3}, 6))", "expect": "[0, 1]"},
+    {"name": "later-pair", "call": "java.util.Arrays.toString(new Solution().pairIndices(new int[]{1,5,3,7}, 10))", "expect": "[2, 3]"},
+    {"name": "none", "call": "java.util.Arrays.toString(new Solution().pairIndices(new int[]{1,2,3}, 100))", "expect": "[-1, -1]"},
+    {"name": "ends", "call": "java.util.Arrays.toString(new Solution().pairIndices(new int[]{8,1,4,3}, 7))", "expect": "[2, 3]"}
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "id": "iam-least-privilege",
+  "module": "aws",
+  "type": "quiz",
+  "title": "IAM least privilege",
+  "prompt": "What does an AWS IAM permissions boundary do?",
+  "choices": ["It sets the maximum permissions an identity policy can grant", "It grants every action inside the boundary", "It replaces the need for a role trust policy"],
+  "answer": "It sets the maximum permissions an identity policy can grant",
+  "explanation": "IAM documents a permissions boundary as a managed policy that limits the permissions identity-based policies can grant. It does not itself grant permissions. Least privilege means starting from the actions a task needs.",
+  "sources": ["https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html"],
+  "verified": "2026-10-30"
+}

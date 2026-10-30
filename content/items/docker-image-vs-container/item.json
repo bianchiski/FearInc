@@ -1,0 +1,12 @@
+{
+  "id": "docker-image-vs-container",
+  "module": "devops",
+  "type": "quiz",
+  "title": "Image and container",
+  "prompt": "Which statement matches the Docker model?",
+  "choices": ["An image is a template; a container is a running instance", "A container is built once and an image is created every run", "An image includes the host kernel"],
+  "answer": "An image is a template; a container is a running instance",
+  "explanation": "Docker's documentation distinguishes an image, the packaged filesystem and configuration, from a container, a runnable instance of that image. Containers share the host kernel.",
+  "sources": ["https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-an-image/", "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container"],
+  "verified": "2026-10-30"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "spring-constructor",
+  "module": "spring",
+  "type": "quiz",
+  "title": "Spring injection",
+  "prompt": "Which dependency style does current Spring Boot guidance generally recommend?",
+  "choices": ["Constructor injection", "Field injection", "Looking up beans from a static context"],
+  "answer": "Constructor injection",
+  "explanation": "Current Spring Boot documentation recommends constructor injection. A @RestController renders JSON by default when Jackson 3, the preferred JSON library in Spring Boot 4, is on the classpath. Jackson 2 support is deprecated.",
+  "sources": ["https://docs.spring.io/spring-boot/reference/using/spring-beans-and-dependency-injection.html", "https://docs.spring.io/spring-boot/reference/features/json.html"],
+  "verified": "2026-10-30"
+}

@@ -1,0 +1,11 @@
+{
+  "id": "design-order-api",
+  "module": "spring",
+  "type": "drill",
+  "title": "Order status API",
+  "prompt": "Name the first reliability property a repeated POST that creates an order must have.",
+  "answer": "idempotency",
+  "explanation": "A client retry must not create a second order. Carry an idempotency key, store the first result, and return that result for the same key. Then add persistence, authorization, and logs.",
+  "sources": ["https://docs.spring.io/spring-boot/reference/web/servlet.html"],
+  "verified": "2026-10-30"
+}

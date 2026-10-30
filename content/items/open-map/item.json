@@ -1,0 +1,25 @@
+{
+  "id": "open-map",
+  "module": "data-structures",
+  "type": "code-problem",
+  "title": "Hash map with chaining",
+  "difficulty": "medium",
+  "className": "OpenMap",
+  "pattern": "hash-map",
+  "statement": "Build a string-to-int map with put, get, contains, and size. Collisions chain in buckets. Putting an existing key replaces its value and does not change size.",
+  "constraints": ["Keys are non-null.", "get throws NoSuchElementException when absent.", "Resize when size exceeds the bucket count."],
+  "complexity": {"time": "average O(1) put and get", "space": "O(n)"},
+  "concepts": ["hash-map"],
+  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html"],
+  "verified": "2026-10-30",
+  "think": ["A hash code chooses a bucket, not the stored entry.", "Two keys can land in the same bucket, so each bucket needs a chain.", "Equality, not just the hash, decides whether a key is present.", "Resize rebuilds every chain because bucket indexes change."],
+  "hints": ["Use Math.floorMod(key.hashCode(), buckets.length).", "Walk the chain before inserting.", "On resize, reinsert every existing entry."],
+  "tests": [
+    {"name": "put-get", "call": "{ OpenMap m = new OpenMap(); m.put(\"a\", 1); return String.valueOf(m.get(\"a\")); }", "expect": "1"},
+    {"name": "replace", "call": "{ OpenMap m = new OpenMap(); m.put(\"a\", 1); m.put(\"a\", 4); return m.size() + \":\" + m.get(\"a\"); }", "expect": "1:4"},
+    {"name": "missing", "call": "String.valueOf(new OpenMap().contains(\"z\"))", "expect": "false"},
+    {"name": "two", "call": "{ OpenMap m = new OpenMap(); m.put(\"a\", 1); m.put(\"b\", 2); return m.get(\"a\") + \",\" + m.get(\"b\"); }", "expect": "1,2"},
+    {"name": "many", "call": "{ OpenMap m = new OpenMap(); for (int i = 0; i < 30; i++) m.put(\"k\" + i, i); return m.size() + \":\" + m.get(\"k29\"); }", "expect": "30:29"},
+    {"name": "zero", "call": "{ OpenMap m = new OpenMap(); m.put(\"z\", 0); return String.valueOf(m.get(\"z\")); }", "expect": "0"}
+  ]
+}

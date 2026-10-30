@@ -1,0 +1,11 @@
+{
+  "id": "bug-complement-order",
+  "module": "patterns",
+  "type": "drill",
+  "title": "Find the bug",
+  "prompt": "A pair search stores the current value before looking for its complement. For input [3,3] and target 6, what goes wrong?",
+  "answer": "the same index is reused",
+  "explanation": "The first 3 is stored before the complement is checked. When the same element is considered, the map points back at its own index, so the solution uses one position twice.",
+  "sources": ["https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/HashMap.html"],
+  "verified": "2026-10-30"
+}
