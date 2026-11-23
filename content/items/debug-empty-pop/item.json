@@ -1,6 +1,5 @@
 {
   "id": "debug-empty-pop",
-  "module": "data-structures",
   "type": "drill",
   "title": "Read the failure",
   "prompt": "A stack test calls pop before push and throws IllegalStateException: empty. What is the first broken assumption?",
@@ -12,5 +11,29 @@
   "verified": "2026-10-30",
   "theory": [
     "stack"
-  ]
+  ],
+  "concept": "stack empty-state invariant",
+  "objective": "Diagnose an empty-pop failure by checking the stack's precondition before reading storage.",
+  "prerequisites": [
+    "int-stack"
+  ],
+  "workedExample": [
+    "A new stack has size zero, so there is no value that pop can return.",
+    "The correct regression test calls pop before push and after the final value is removed."
+  ],
+  "recallPrompt": "Which invariant is false when pop is called on a new stack?",
+  "misconceptions": [
+    {
+      "id": "exception-is-bug",
+      "explanation": "The exception is useful evidence that the empty check fired; the missing test is the broken assumption.",
+      "retry": "Name the state that must be tested before any push."
+    },
+    {
+      "id": "only-first-empty",
+      "explanation": "A stack can become empty again after its last value is removed.",
+      "retry": "Add a second empty-pop scenario after push followed by pop."
+    }
+  ],
+  "reflectionPrompt": "Describe the smallest regression test that protects the empty-state invariant.",
+  "feedback": {}
 }

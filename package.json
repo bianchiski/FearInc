@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:client": "node --test web/draft-state.test.mjs"
+  }
+}

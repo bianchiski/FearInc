@@ -1,5 +1,4 @@
 {
-  "settings": {"aiDrills": false, "aiFeedback": false},
   "modules": [
     {"id":"foundations","title":"Foundations","track":"Core","items":["big-o-reading","pair-indices","explain-pair-indices","duplicate-values","sorted-search","bracket-balance"]},
     {"id":"data-structures","title":"Data Structures from Scratch","track":"Core","items":["dynamic-array","linked-list","int-stack","int-queue","open-map","min-heap","binary-search-tree","graph-search","debug-empty-pop"]},

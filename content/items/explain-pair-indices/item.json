@@ -1,6 +1,5 @@
 {
   "id": "explain-pair-indices",
-  "module": "foundations",
   "type": "explain",
   "title": "Explain pair indices",
   "prompt": "Set a timer for three minutes. Explain the approach, its time and space, one trade-off, and one edge case. Then score yourself honestly.",

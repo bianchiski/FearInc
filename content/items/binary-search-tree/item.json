@@ -1,6 +1,5 @@
 {
   "id": "binary-search-tree",
-  "module": "data-structures",
   "type": "code-problem",
   "title": "Binary search tree",
   "difficulty": "medium",
@@ -38,35 +37,78 @@
     {
       "name": "sorted",
       "call": "{ Bst t = new Bst(); t.insert(2); t.insert(1); t.insert(3); return t.inorder(); }",
-      "expect": "1 2 3"
+      "expect": "1 2 3",
+      "concept": "tree ordering and recursion",
+      "edgeCase": "sorted scenario"
     },
     {
       "name": "contains",
       "call": "{ Bst t = new Bst(); t.insert(2); return t.contains(2) + \":\" + t.contains(4); }",
-      "expect": "true:false"
+      "expect": "true:false",
+      "concept": "tree ordering and recursion",
+      "edgeCase": "contains scenario"
     },
     {
       "name": "duplicate",
       "call": "{ Bst t = new Bst(); t.insert(2); t.insert(2); return t.inorder(); }",
-      "expect": "2"
+      "expect": "2",
+      "concept": "tree ordering and recursion",
+      "edgeCase": "duplicate value"
     },
     {
       "name": "empty",
       "call": "new Bst().inorder()",
-      "expect": ""
+      "expect": "",
+      "concept": "tree ordering and recursion",
+      "edgeCase": "empty structure"
     },
     {
       "name": "left-chain",
       "call": "{ Bst t = new Bst(); t.insert(3); t.insert(2); t.insert(1); return t.inorder(); }",
-      "expect": "1 2 3"
+      "expect": "1 2 3",
+      "concept": "tree ordering and recursion",
+      "edgeCase": "left-chain scenario"
     },
     {
       "name": "mixed",
       "call": "{ Bst t = new Bst(); t.insert(5); t.insert(1); t.insert(8); t.insert(3); return t.inorder(); }",
-      "expect": "1 3 5 8"
+      "expect": "1 3 5 8",
+      "concept": "tree ordering and recursion",
+      "edgeCase": "mixed scenario"
     }
   ],
   "theory": [
     "binary-search-tree"
-  ]
+  ],
+  "concept": "tree ordering and recursion",
+  "objective": "Preserve the left-smaller/right-larger invariant while inserting and searching a tree.",
+  "prerequisites": [
+    "linked-list"
+  ],
+  "workedExample": [
+    "At each node, compare the target with the node value and choose exactly one child direction.",
+    "An inorder traversal visits left, node, right, producing sorted values when the invariant is intact."
+  ],
+  "recallPrompt": "What ordering fact makes inorder traversal produce sorted output?",
+  "misconceptions": [
+    {
+      "id": "wrong-branch",
+      "explanation": "Searching both branches loses the tree's ordering advantage and can hide a direction bug.",
+      "retry": "For a target smaller than the current node, state the only child that can contain it."
+    },
+    {
+      "id": "duplicate-node",
+      "explanation": "The item contract says duplicates do nothing, so equality is a terminal case.",
+      "retry": "Trace insert of an existing value and count nodes before and after."
+    }
+  ],
+  "reflectionPrompt": "Explain how tree height, rather than node count alone, controls search cost.",
+  "feedback": {
+    "sorted": "If this fails, revisit tree ordering and recursion and trace the sorted scenario case.",
+    "contains": "If this fails, revisit tree ordering and recursion and trace the contains scenario case.",
+    "duplicate": "If this fails, revisit tree ordering and recursion and trace the duplicate value case.",
+    "empty": "If this fails, revisit tree ordering and recursion and trace the empty structure case.",
+    "left-chain": "If this fails, revisit tree ordering and recursion and trace the left-chain scenario case.",
+    "mixed": "If this fails, revisit tree ordering and recursion and trace the mixed scenario case."
+  }
 }

@@ -1,6 +1,5 @@
 {
   "id": "int-stack",
-  "module": "data-structures",
   "type": "code-problem",
   "title": "Stack from an array",
   "difficulty": "easy",
@@ -37,35 +36,78 @@
     {
       "name": "lifo",
       "call": "{ IntStack s = new IntStack(); s.push(1); s.push(2); return s.pop() + \",\" + s.pop(); }",
-      "expect": "2,1"
+      "expect": "2,1",
+      "concept": "stack LIFO invariant",
+      "edgeCase": "lifo scenario"
     },
     {
       "name": "size",
       "call": "{ IntStack s = new IntStack(); s.push(4); s.push(5); return String.valueOf(s.size()); }",
-      "expect": "2"
+      "expect": "2",
+      "concept": "stack LIFO invariant",
+      "edgeCase": "size scenario"
     },
     {
       "name": "after-pop",
       "call": "{ IntStack s = new IntStack(); s.push(4); s.pop(); return String.valueOf(s.size()); }",
-      "expect": "0"
+      "expect": "0",
+      "concept": "stack LIFO invariant",
+      "edgeCase": "after-pop scenario"
     },
     {
       "name": "reuse",
       "call": "{ IntStack s = new IntStack(); s.push(1); s.pop(); s.push(9); return String.valueOf(s.pop()); }",
-      "expect": "9"
+      "expect": "9",
+      "concept": "stack LIFO invariant",
+      "edgeCase": "reuse scenario"
     },
     {
       "name": "many",
       "call": "{ IntStack s = new IntStack(); for (int i = 0; i < 30; i++) s.push(i); return s.pop() + \":\" + s.size(); }",
-      "expect": "29:29"
+      "expect": "29:29",
+      "concept": "stack LIFO invariant",
+      "edgeCase": "growth boundary"
     },
     {
       "name": "zero",
       "call": "{ IntStack s = new IntStack(); s.push(0); return String.valueOf(s.pop()); }",
-      "expect": "0"
+      "expect": "0",
+      "concept": "stack LIFO invariant",
+      "edgeCase": "zero value"
     }
   ],
   "theory": [
     "stack"
-  ]
+  ],
+  "concept": "stack LIFO invariant",
+  "objective": "Implement push and pop around the next-free index while preserving LIFO order.",
+  "prerequisites": [
+    "dynamic-array"
+  ],
+  "workedExample": [
+    "After push(1), push(2), the next-free index is 2 and the top is at index 1.",
+    "Pop first decrements the index to 1, then reads index 1, so it returns 2 before 1."
+  ],
+  "recallPrompt": "Why does pop retreat the top index before reading the value?",
+  "misconceptions": [
+    {
+      "id": "read-before-retreat",
+      "explanation": "Reading the next-free slot skips the current top and can return an empty value.",
+      "retry": "Mark the next-free index after two pushes, then mark the index pop should read."
+    },
+    {
+      "id": "ignore-empty",
+      "explanation": "An empty stack has no valid top index, so pop must reject it before reading.",
+      "retry": "Write the empty-state check in plain language before writing the array access."
+    }
+  ],
+  "reflectionPrompt": "State the stack invariant in one sentence and identify the operation that proves it.",
+  "feedback": {
+    "lifo": "If this fails, revisit stack LIFO invariant and trace the lifo scenario case.",
+    "size": "If this fails, revisit stack LIFO invariant and trace the size scenario case.",
+    "after-pop": "If this fails, revisit stack LIFO invariant and trace the after-pop scenario case.",
+    "reuse": "If this fails, revisit stack LIFO invariant and trace the reuse scenario case.",
+    "many": "If this fails, revisit stack LIFO invariant and trace the growth boundary case.",
+    "zero": "If this fails, revisit stack LIFO invariant and trace the zero value case."
+  }
 }

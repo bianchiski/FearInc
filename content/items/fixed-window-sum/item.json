@@ -1,6 +1,5 @@
 {
   "id": "fixed-window-sum",
-  "module": "patterns",
   "type": "code-problem",
   "title": "Fixed window sum",
   "difficulty": "easy",

@@ -28,6 +28,11 @@
     .reference-code summary { cursor: pointer; color: #bcd1ff; }
     .reference-code pre { overflow-x: auto; border: 1px solid #36598d; color: #dce8ff; }
     .muted { color: #8fa3c9; } .ok { color: #3dd6a0; } .bad { color: #ff8d8d; }
+    .objective { color: #d9e5ff; font-size: 17px; }
+    .learning-card { margin: 14px 0; padding: 12px 14px; background: #10213b; border: 1px solid #36598d; border-radius: 12px; }
+    .learning-card summary { cursor: pointer; color: #bcd1ff; font-weight: 700; }
+    .session-primary { width: 100%; font-weight: 700; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
     @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -38,101 +43,14 @@
 </header>
 <main>
   <aside>
+    <div class="panel"><h3>Today's session</h3><div id="session-content"></div></div>
     <div class="panel"><h3>Due</h3><div id="due"></div></div>
     <div class="panel"><h3>Modules</h3><div id="modules"></div></div>
+    <div class="panel"><h3>Learning signals</h3><div id="summary"></div></div>
     <div class="panel"><h3>Planner</h3><div id="planner" class="muted"></div></div>
   </aside>
   <section id="work" class="panel">Loading the catalog…</section>
 </main>
-<script>
-let catalog, current, hintsUsed = 0, thinkAt = 0;
-const $ = id => document.getElementById(id);
-async function load(selectId) {
-  catalog = await (await fetch('/api/catalog')).json();
-  $('ai').checked = !!catalog.settings.aiDrills;
-  $('planner').innerHTML = catalog.planner.cadence.map(x => `<div>${x}</div>`).join('') + `<p>${catalog.planner.target}</p>`;
-  $('due').innerHTML = catalog.due.length ? catalog.due.map(x => `<button class="item" onclick="openItem('${x.item}')">${x.item}</button>`).join('') : '<span class="muted">None today.</span>';
-  const mastered = new Set(catalog.mastered);
-  let previousReady = true;
-  $('modules').innerHTML = catalog.modules.map(module => {
-    const items = catalog.items.filter(item => item.module === module.id);
-    const gradable = items.filter(item => item.type !== 'lesson');
-    const passed = gradable.filter(item => mastered.has(item.id)).length;
-    const open = previousReady;
-    previousReady = gradable.length === 0 || passed / gradable.length >= 0.7;
-    return `<h3>${open ? '' : 'Locked · '}${module.title}</h3>` + (open ? items : []).map(item => `<button class="item" onclick="openItem('${item.id}')">${mastered.has(item.id) ? '● ' : ''}${item.title}</button>`).join('');
-  }).join('');
-  const next = selectId || (current && current.id) || catalog.items.find(item => item.type === 'code-problem').id;
-  openItem(next);
-}
-function item(id) { return catalog.items.find(x => x.id === id); }
-function theoryHtml(markdown) {
-  let html = markdown.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-  html = html.replace(/```(?:java)?\n([\s\S]*?)```/g, '<pre>$1</pre>');
-  html = html.replace(/^### (.*)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.*)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.*)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/^- (.*)$/gm, '<li>$1</li>')
-    .replace(/\n{2,}/g, '</p><p>')
-    .replace(/\n/g, '<br>');
-  return `<p>${html}</p>`.replace(/(<li>.*?<\/li>)(?:<br>)?/g, '<ul>$1</ul>');
-}
-function codeHtml(source) {
-  return `<details class="reference-code"><summary>C solution (unlocked)</summary><pre>${source.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')}</pre></details>`;
-}
-function openItem(id) {
-  current = item(id); hintsUsed = 0; thinkAt = 0;
-  const code = current.type === 'code-problem';
-  const quiz = current.type === 'quiz' || current.type === 'drill';
-  $('work').innerHTML = `
-    <p class="muted">${current.module} · ${current.type}</p>
-    <h2>${current.title}</h2>
-    <p>${current.statement || current.body || current.prompt || ''}</p>
-    <details class="theory"><summary>Learn first (optional)</summary><div class="theory-body">${theoryHtml(current.theoryText || '')}</div></details>
-    ${current.constraints ? `<p class="muted">${current.constraints.join(' ')}</p>` : ''}
-    ${current.complexity ? `<p class="muted">Target: ${current.complexity.time}, ${current.complexity.space}</p>` : ''}
-    ${current.think ? `<h3>Think</h3><p id="think">${current.think[0]}</p><button onclick="nextThink()">Next step</button>` : ''}
-    ${code && current.solutionC ? codeHtml(current.solutionC) : ''}
-    ${code ? `<button class="secondary" onclick="hint()">Hint</button><p id="hint"></p><textarea id="code"></textarea><button onclick="runCode()">Run hidden tests</button>` : ''}
-    ${quiz ? (current.choices || []).map(choice => `<button class="secondary" onclick="answer('${choice.replaceAll("'", "\\'")}')">${choice}</button>`).join('') + `<p>Or type the exact answer:</p><textarea id="answer"></textarea><button onclick="answer($('answer').value)">Check</button>` : ''}
-    ${current.type === 'explain' ? `<p>${current.rubric.join(' · ')}</p><button onclick="score(5)">I covered all four</button><button class="secondary" onclick="score(3)">I missed one</button><button class="secondary" onclick="score(1)">I could not explain it</button>` : ''}
-    <pre id="result"></pre>
-    <h3>What went wrong?</h3>
-    ${['misread','wrong pattern','edge case','bug','blanked'].map(x => `<button class="secondary" onclick="mistake('${x}')">${x}</button>`).join('')}
-    <p id="status"></p>`;
-  if (code) $('code').value = current.starter || '';
-}
-function nextThink() { thinkAt = Math.min(thinkAt + 1, current.think.length - 1); $('think').textContent = current.think[thinkAt]; }
-async function hint() {
-  const response = await fetch('/api/hint', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, level:hintsUsed})});
-  const body = await response.json();
-  if (body.hint) { hintsUsed = body.level; $('hint').textContent = `Hint ${body.level}/${body.total}: ${body.hint}`; }
-}
-async function runCode() {
-  const source = $('code').value;
-  $('result').textContent = 'Running…';
-  const response = await fetch('/api/judge', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, source, hintsUsed})});
-  const body = await response.json();
-  const text = body.error || body.tests.map(test => `${test.passed ? 'PASS' : 'FAIL'} ${test.name} ${test.detail || ''}`).join('\n');
-  if (!body.ok) { $('result').textContent = text; $('result').className = 'bad'; return; }
-  const id = current.id;
-  await load(id);
-  $('code').value = source;
-  $('result').textContent = text;
-  $('result').className = 'ok';
-}
-async function answer(value) {
-  const response = await fetch('/api/check', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, answer:value})});
-  const body = await response.json();
-  $('result').textContent = (body.correct ? 'Correct. ' : 'Not yet. ') + body.explanation;
-  $('result').className = body.correct ? 'ok' : 'bad';
-}
-async function score(quality) { await fetch('/api/review', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, quality})}); $('status').textContent = 'Review scheduled.'; }
-async function mistake(type) { const response = await fetch('/api/mistake', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:current.id, mistake:type})}); $('status').textContent = 'Logged. Weak spots: ' + (await response.json()).weakSpots.map(x => `${x.mistake} (${x.count})`).join(', '); }
-$('ai').onchange = async event => { await fetch('/api/settings', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({aiDrills:event.target.checked, aiFeedback:false})}); load(); };
-load();
-</script>
+<script type="module" src="/app.js"></script>
 </body>
 </html>

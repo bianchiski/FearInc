@@ -1,6 +1,5 @@
 {
   "id": "dynamic-array",
-  "module": "data-structures",
   "type": "code-problem",
   "title": "Dynamic array",
   "difficulty": "easy",
@@ -37,35 +36,76 @@
     {
       "name": "empty",
       "call": "String.valueOf(new DynamicArray().size())",
-      "expect": "0"
+      "expect": "0",
+      "concept": "array capacity and order",
+      "edgeCase": "empty structure"
     },
     {
       "name": "one",
       "call": "{ DynamicArray a = new DynamicArray(); a.add(4); return a.size() + \":\" + a.get(0); }",
-      "expect": "1:4"
+      "expect": "1:4",
+      "concept": "array capacity and order",
+      "edgeCase": "single value"
     },
     {
       "name": "order",
       "call": "{ DynamicArray a = new DynamicArray(); a.add(1); a.add(2); a.add(3); return a.get(0) + \",\" + a.get(1) + \",\" + a.get(2); }",
-      "expect": "1,2,3"
+      "expect": "1,2,3",
+      "concept": "array capacity and order",
+      "edgeCase": "order scenario"
     },
     {
       "name": "grows",
       "call": "{ DynamicArray a = new DynamicArray(); for (int i = 0; i < 20; i++) a.add(i); return a.size() + \":\" + a.get(19); }",
-      "expect": "20:19"
+      "expect": "20:19",
+      "concept": "array capacity and order",
+      "edgeCase": "capacity boundary"
     },
     {
       "name": "zero",
       "call": "{ DynamicArray a = new DynamicArray(); a.add(0); return String.valueOf(a.get(0)); }",
-      "expect": "0"
+      "expect": "0",
+      "concept": "array capacity and order",
+      "edgeCase": "zero value"
     },
     {
       "name": "negative",
       "call": "{ DynamicArray a = new DynamicArray(); a.add(-5); a.add(8); return a.get(0) + \":\" + a.get(1); }",
-      "expect": "-5:8"
+      "expect": "-5:8",
+      "concept": "array capacity and order",
+      "edgeCase": "negative value"
     }
   ],
   "theory": [
     "dynamic-array"
-  ]
+  ],
+  "concept": "array capacity and order",
+  "objective": "Preserve size and element order while growing an integer array.",
+  "prerequisites": [],
+  "workedExample": [
+    "With capacity 2, add 10 and then 20; size is 2 and both indexes are occupied.",
+    "Before a third add, allocate a larger array, copy indexes 0 through size - 1, then write the new value."
+  ],
+  "recallPrompt": "What must remain true about every index below size after add returns?",
+  "misconceptions": [
+    {
+      "id": "resize-after-write",
+      "explanation": "Writing into a full backing array loses the boundary before capacity changes.",
+      "retry": "Trace an add when size equals the array length and name the first safe operation."
+    },
+    {
+      "id": "copy-only-last",
+      "explanation": "A resize must preserve every existing position, not only the newest value.",
+      "retry": "List the indexes that must be copied before adding the next element."
+    }
+  ],
+  "reflectionPrompt": "Explain why resizing changes space cost but not the amortized cost of append.",
+  "feedback": {
+    "empty": "If this fails, revisit array capacity and order and trace the empty structure case.",
+    "one": "If this fails, revisit array capacity and order and trace the single value case.",
+    "order": "If this fails, revisit array capacity and order and trace the order scenario case.",
+    "grows": "If this fails, revisit array capacity and order and trace the capacity boundary case.",
+    "zero": "If this fails, revisit array capacity and order and trace the zero value case.",
+    "negative": "If this fails, revisit array capacity and order and trace the negative value case."
+  }
 }

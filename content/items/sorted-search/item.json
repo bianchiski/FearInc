@@ -1,6 +1,5 @@
 {
   "id": "sorted-search",
-  "module": "foundations",
   "type": "code-problem",
   "title": "Sorted search",
   "difficulty": "easy",

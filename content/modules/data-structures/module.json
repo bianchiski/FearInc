@@ -6,16 +6,5 @@
   "lessons": [
     {"id":"nodes","title":"Nodes and invariants","text":"A linked structure is correct only when each link and endpoint invariant is preserved after every operation."},
     {"id":"hash-table","title":"Build a hash table","text":"Hashing maps keys to buckets. Handle collisions explicitly and resize before the load factor becomes harmful."}
-  ],
-  "problems": [
-    {"id":"dynamic-array","difficulty":"easy","tests":6,"hints":3,"complexity":"amortized O(1) append, O(n) resize"},
-    {"id":"linked-list","difficulty":"easy","tests":6,"hints":3,"complexity":"O(1) head insert, O(n) search"},
-    {"id":"int-stack","difficulty":"easy","tests":6,"hints":3,"complexity":"O(1) push/pop"},
-    {"id":"int-queue","difficulty":"easy","tests":6,"hints":3,"complexity":"O(1) enqueue/dequeue"},
-    {"id":"open-map","difficulty":"medium","tests":6,"hints":3,"complexity":"average O(1) lookup"},
-    {"id":"min-heap","difficulty":"medium","tests":6,"hints":3,"complexity":"O(log n) insert/remove"},
-    {"id":"binary-search-tree","difficulty":"medium","tests":6,"hints":3,"complexity":"O(h) search"},
-    {"id":"graph-search","difficulty":"medium","tests":6,"hints":3,"complexity":"O(V+E) search"}
-  ],
-  "quality": {"hints": 3, "edgeTests": 2, "referenceSolution": true}
+  ]
 }

@@ -1,6 +1,5 @@
 {
   "id": "design-order-api",
-  "module": "spring",
   "type": "drill",
   "title": "Order status API",
   "prompt": "Name the first reliability property a repeated POST that creates an order must have.",
@@ -12,5 +11,13 @@
   "verified": "2026-10-30",
   "theory": [
     "api-design"
-  ]
+  ],
+  "misconceptions": [
+    {
+      "id": "retry-is-new-request",
+      "explanation": "A network retry is the same client operation and must not create a second order.",
+      "retry": "Name the request key that lets the server return the original result."
+    }
+  ],
+  "retryPrompt": "State the key distinction in your own words, then retry once."
 }

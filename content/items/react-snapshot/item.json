@@ -1,6 +1,5 @@
 {
   "id": "react-snapshot",
-  "module": "typescript-react",
   "type": "quiz",
   "title": "React render snapshot",
   "prompt": "What does calling a state setter do to the state value already in the current render?",
@@ -18,5 +17,13 @@
   "verified": "2026-10-30",
   "theory": [
     "react-rendering"
-  ]
+  ],
+  "misconceptions": [
+    {
+      "id": "setter-does-not-mutate-render",
+      "explanation": "A state setter requests a later render; the current render keeps its snapshot value.",
+      "retry": "Describe what the current event handler reads after calling the setter."
+    }
+  ],
+  "retryPrompt": "State the key distinction in your own words, then retry once."
 }

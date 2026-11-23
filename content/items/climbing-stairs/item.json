@@ -1,6 +1,5 @@
 {
   "id": "climbing-stairs",
-  "module": "patterns",
   "type": "code-problem",
   "title": "Climbing stairs",
   "difficulty": "easy",

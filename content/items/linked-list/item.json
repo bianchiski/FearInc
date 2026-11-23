@@ -1,6 +1,5 @@
 {
   "id": "linked-list",
-  "module": "data-structures",
   "type": "code-problem",
   "title": "Singly linked list",
   "difficulty": "easy",
@@ -41,32 +40,75 @@
     {
       "name": "empty",
       "call": "new LinkedList().values()",
-      "expect": ""
+      "expect": "",
+      "concept": "linked endpoints and traversal",
+      "edgeCase": "empty structure"
     },
     {
       "name": "first",
       "call": "{ LinkedList list = new LinkedList(); list.addFirst(2); list.addFirst(1); return list.values(); }",
-      "expect": "1,2"
+      "expect": "1,2",
+      "concept": "linked endpoints and traversal",
+      "edgeCase": "first scenario"
     },
     {
       "name": "last",
       "call": "{ LinkedList list = new LinkedList(); list.addLast(1); list.addLast(2); return list.values(); }",
-      "expect": "1,2"
+      "expect": "1,2",
+      "concept": "linked endpoints and traversal",
+      "edgeCase": "last scenario"
     },
     {
       "name": "remove",
       "call": "{ LinkedList list = new LinkedList(); list.addLast(1); list.addLast(2); return list.removeFirst() + \":\" + list.values(); }",
-      "expect": "1:2"
+      "expect": "1:2",
+      "concept": "linked endpoints and traversal",
+      "edgeCase": "remove scenario"
     },
     {
       "name": "remove-empty",
       "call": "String.valueOf(new LinkedList().removeFirst())",
-      "expect": "null"
+      "expect": "null",
+      "concept": "linked endpoints and traversal",
+      "edgeCase": "remove-empty scenario"
     },
     {
       "name": "mixed",
       "call": "{ LinkedList list = new LinkedList(); list.addFirst(2); list.addLast(3); list.addFirst(1); return list.values(); }",
-      "expect": "1,2,3"
+      "expect": "1,2,3",
+      "concept": "linked endpoints and traversal",
+      "edgeCase": "mixed scenario"
     }
-  ]
+  ],
+  "concept": "linked endpoints and traversal",
+  "objective": "Maintain head, tail, and next-link invariants while inserting and removing nodes.",
+  "prerequisites": [
+    "dynamic-array"
+  ],
+  "workedExample": [
+    "An empty list has head and tail set to null.",
+    "Adding the first node sets both endpoints; adding another node links it after tail and moves tail."
+  ],
+  "recallPrompt": "Which endpoint references must change when the list goes from empty to one node?",
+  "misconceptions": [
+    {
+      "id": "lose-head",
+      "explanation": "Changing head without first preserving the old chain disconnects the list.",
+      "retry": "Draw the old head and new node before assigning head."
+    },
+    {
+      "id": "stale-tail",
+      "explanation": "After removing the last node, tail must not point at an object outside the list.",
+      "retry": "Trace removeFirst on a one-node list and state both endpoint values."
+    }
+  ],
+  "reflectionPrompt": "Compare the invariant that makes head insertion O(1) with the work needed for addLast.",
+  "feedback": {
+    "empty": "If this fails, revisit linked endpoints and traversal and trace the empty structure case.",
+    "first": "If this fails, revisit linked endpoints and traversal and trace the first scenario case.",
+    "last": "If this fails, revisit linked endpoints and traversal and trace the last scenario case.",
+    "remove": "If this fails, revisit linked endpoints and traversal and trace the remove scenario case.",
+    "remove-empty": "If this fails, revisit linked endpoints and traversal and trace the remove-empty scenario case.",
+    "mixed": "If this fails, revisit linked endpoints and traversal and trace the mixed scenario case."
+  }
 }

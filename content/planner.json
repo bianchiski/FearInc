@@ -1,5 +1,12 @@
 {
-  "cadence": ["Monday: one judged problem", "Wednesday: one judged problem", "Friday: one judged problem", "Saturday: due reviews only", "Sunday: explain-aloud mock, hints disabled"],
   "dailyMinutes": 30,
-  "target": "Pass data structures, including graph search, then the patterns module."
+  "target": "Build reliable data-structure invariants, then transfer them to algorithm patterns.",
+  "selectionOrder": ["resume", "due-review", "prerequisite-ready"],
+  "routine": [
+    {"id":"teach","label":"Learn one idea","minutes":5},
+    {"id":"recall","label":"Say it back","minutes":3},
+    {"id":"practice","label":"Solve with guidance","minutes":15},
+    {"id":"feedback","label":"Study the failure","minutes":4},
+    {"id":"review","label":"Schedule the next recall","minutes":3}
+  ]
 }

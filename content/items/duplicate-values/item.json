@@ -1,6 +1,5 @@
 {
   "id": "duplicate-values",
-  "module": "foundations",
   "type": "code-problem",
   "title": "Duplicate values",
   "difficulty": "easy",

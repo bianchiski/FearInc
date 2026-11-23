@@ -1,6 +1,5 @@
 {
   "id": "bug-complement-order",
-  "module": "patterns",
   "type": "drill",
   "title": "Find the bug",
   "prompt": "A pair search stores the current value before looking for its complement. For input [3,3] and target 6, what goes wrong?",
@@ -12,5 +11,13 @@
   "verified": "2026-10-30",
   "theory": [
     "hash-map"
-  ]
+  ],
+  "misconceptions": [
+    {
+      "id": "same-index",
+      "explanation": "Checking after storing the current value can make the lookup return the current index itself.",
+      "retry": "For [3,3], decide whether lookup or storage comes first and why."
+    }
+  ],
+  "retryPrompt": "State the key distinction in your own words, then retry once."
 }

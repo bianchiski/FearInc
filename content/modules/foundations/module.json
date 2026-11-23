@@ -6,12 +6,5 @@
   "lessons": [
     {"id":"complexity","title":"Reading Big-O","text":"Count how work grows as input grows. Sequential loops add; nested loops multiply. State time and extra space separately."},
     {"id":"integer-reasoning","title":"Integer reasoning","text":"Check signs, overflow, modulo behavior, and empty input before coding."}
-  ],
-  "problems": [
-    {"id":"pair-indices","difficulty":"easy","tests":6,"hints":3,"complexity":"O(n) time, O(n) space"},
-    {"id":"duplicate-values","difficulty":"easy","tests":6,"hints":3,"complexity":"O(n) time, O(n) space"},
-    {"id":"sorted-search","difficulty":"easy","tests":6,"hints":3,"complexity":"O(log n) time, O(1) space"},
-    {"id":"bracket-balance","difficulty":"easy","tests":6,"hints":3,"complexity":"O(n) time, O(n) space"}
-  ],
-  "quality": {"hints": 3, "edgeTests": 2, "referenceSolution": true}
+  ]
 }

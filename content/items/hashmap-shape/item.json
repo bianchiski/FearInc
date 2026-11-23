@@ -1,6 +1,5 @@
 {
   "id": "hashmap-shape",
-  "module": "low-level-java",
   "type": "quiz",
   "title": "HashMap defaults",
   "prompt": "A new HashMap() in Java 25 starts with which capacity and load factor?",
@@ -17,5 +16,13 @@
   "verified": "2026-10-30",
   "theory": [
     "hash-map"
-  ]
+  ],
+  "misconceptions": [
+    {
+      "id": "capacity-is-threshold",
+      "explanation": "Capacity is the bucket count; the load factor is the fraction that triggers resizing.",
+      "retry": "State the capacity and load factor separately before retrying."
+    }
+  ],
+  "retryPrompt": "State the key distinction in your own words, then retry once."
 }

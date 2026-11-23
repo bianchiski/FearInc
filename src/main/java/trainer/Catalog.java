@@ -16,25 +16,30 @@ import org.json.JSONObject;
 public final class Catalog {
   private static final Set<String> SOURCE_REQUIRED = Set.of("aws", "security", "spring");
   private static final List<String> REQUIRED = List.of(
-      "id", "module", "type", "title", "sources", "verified");
+      "id", "type", "title", "verified");
 
   private Catalog() {}
 
   public static JSONObject load(Path root) throws IOException {
-    JSONArray items = new JSONArray();
-    try (var files = Files.walk(root.resolve("items"))) {
-      files.filter(path -> path.getFileName().toString().equals("item.json"))
-          .sorted(Comparator.comparing(Path::toString))
-          .forEach(path -> items.put(readItem(path)));
-    }
+    JSONArray items = readItems(root);
+    JSONObject syllabus = new JSONObject(Files.readString(root.resolve("catalog.json")));
+    JSONArray moduleList = requiredArray(syllabus, "modules", "catalog");
+    validateSyllabus(moduleList, items);
     validate(items);
-    JSONObject modules = new JSONObject(Files.readString(root.resolve("catalog.json")));
-    JSONArray moduleList = modules.getJSONArray("modules");
-    validateSyllabus(root, moduleList, items);
     return new JSONObject()
         .put("modules", moduleList)
         .put("items", items)
         .put("planner", new JSONObject(Files.readString(root.resolve("planner.json"))));
+  }
+
+  private static JSONArray readItems(Path root) throws IOException {
+    JSONArray items = new JSONArray();
+    try (var files = Files.walk(root.resolve("items"))) {
+      files.filter(path -> path.getFileName().toString().equals("item.json"))
+          .sorted(Comparator.comparing(Path::toString))
+          .forEach(path -> items.put(readItem(root, path)));
+    }
+    return items;
   }
 
   public static JSONObject redact(JSONObject item, boolean solved) {
@@ -43,19 +48,21 @@ public final class Catalog {
     copy.remove("tests");
     copy.remove("answer");
     if (!solved) copy.remove("solutionC");
-    if (copy.has("hints")) copy.put("hintCount", copy.getJSONArray("hints").length()).remove("hints");
-    if ("drill".equals(copy.optString("type")) && copy.optBoolean("aiStyled", false)) copy.put("optionalAi", true);
+    copy.remove("hints");
+    copy.remove("feedback");
+    copy.remove("misconceptions");
+    copy.remove("retryPrompt");
     return copy;
   }
 
-  private static JSONObject readItem(Path path) {
+  private static JSONObject readItem(Path root, Path path) {
     try {
       JSONObject item = new JSONObject(Files.readString(path));
       Path directory = path.getParent();
       if (item.has("theory")) {
         StringBuilder theoryText = new StringBuilder();
         for (Object topic : item.getJSONArray("theory")) {
-          Path theory = directory.getParent().getParent()
+          Path theory = root
               .resolve("theory").resolve(topic.toString()).resolve("theory.md");
           if (Files.exists(theory)) {
             if (theoryText.length() > 0) theoryText.append("\n\n---\n\n");
@@ -79,81 +86,134 @@ public final class Catalog {
   private static void validate(JSONArray items) {
     for (Object value : items) {
       JSONObject item = (JSONObject) value;
+      String id = item.optString("id", "unknown");
       for (String field : REQUIRED) {
-        if (!item.has(field) || item.get(field).toString().isBlank()) {
-          throw new IllegalStateException(item.optString("id", "unknown") + " is missing " + field);
-        }
+        requiredString(item, field, id);
       }
-      if (!item.has("theory") || item.getJSONArray("theory").isEmpty()
-          || !item.has("theoryText") || item.getString("theoryText").isBlank()) {
-        throw new IllegalStateException(item.getString("id") + " needs beginner-friendly theory");
+      JSONArray sources = requiredArray(item, "sources", id);
+      JSONArray theory = requiredArray(item, "theory", id);
+      if (theory.isEmpty() || item.optString("theoryText").isBlank()) {
+        throw new IllegalStateException(id + " needs beginner-friendly theory");
       }
-      if (SOURCE_REQUIRED.contains(item.getString("module")) && item.getJSONArray("sources").isEmpty()) {
-        throw new IllegalStateException(item.getString("id") + " requires sources");
+      if (SOURCE_REQUIRED.contains(item.getString("module"))
+          && sources.isEmpty()) {
+        throw new IllegalStateException(id + " requires sources");
       }
       if ("code-problem".equals(item.getString("type"))) {
-        if (item.getJSONArray("tests").length() < 6) throw new IllegalStateException(item.getString("id") + " needs 6 tests");
-        if (item.getJSONArray("hints").length() < 3) throw new IllegalStateException(item.getString("id") + " needs 3 hints");
-        if (item.getJSONArray("think").length() < 4) throw new IllegalStateException(item.getString("id") + " needs a walkthrough");
-        if (!item.has("className") || item.getString("className").isBlank()) {
-          throw new IllegalStateException(item.getString("id") + " needs a className");
+        JSONArray tests = requiredArray(item, "tests", id);
+        if (tests.length() < 6) {
+          throw new IllegalStateException(id + " needs 6 tests");
         }
+        if (requiredArray(item, "hints", id).length() < 3) {
+          throw new IllegalStateException(id + " needs 3 hints");
+        }
+        if (requiredArray(item, "think", id).length() < 4) {
+          throw new IllegalStateException(id + " needs a walkthrough");
+        }
+        requiredString(item, "className", id);
         if (!item.has("reference") || !item.has("complexity")) {
-          throw new IllegalStateException(item.getString("id") + " needs a reference and complexity");
+          throw new IllegalStateException(id + " needs a reference and complexity");
+        }
+        if ("data-structures".equals(item.getString("module"))) {
+          validateInstructionalFields(item, tests, id);
+        }
+      } else if ("quiz".equals(item.getString("type")) || "drill".equals(item.getString("type"))) {
+        requiredString(item, "answer", id);
+        if ("data-structures".equals(item.getString("module")) && item.has("misconceptions")) {
+          validateMisconceptions(item, id);
         }
       }
     }
   }
 
-  private static void validateSyllabus(Path root, JSONArray modules, JSONArray items) throws IOException {
+  private static void validateInstructionalFields(JSONObject item, JSONArray tests, String id) {
+    requiredString(item, "objective", id);
+    requiredArray(item, "prerequisites", id);
+    requiredString(item, "recallPrompt", id);
+    if (requiredArray(item, "workedExample", id).length() < 2) {
+      throw new IllegalStateException(id + " needs a two-step worked example");
+    }
+    validateMisconceptions(item, id);
+    JSONObject feedback = requiredObject(item, "feedback", id);
+    requiredString(item, "reflectionPrompt", id);
+    for (Object value : tests) {
+      if (!(value instanceof JSONObject test)) {
+        throw new IllegalStateException(id + " has an invalid test");
+      }
+      String name = requiredString(test, "name", id + " test");
+      requiredString(test, "concept", id + " test " + name);
+      requiredString(test, "edgeCase", id + " test " + name);
+      requiredString(test, "call", id + " test " + name);
+      if (!(test.opt("expect") instanceof String)) {
+        throw new IllegalStateException(id + " test " + name + " is missing expect");
+      }
+      requiredString(feedback, name, id + " feedback");
+    }
+  }
+
+  private static void validateMisconceptions(JSONObject item, String id) {
+    JSONArray misconceptions = requiredArray(item, "misconceptions", id);
+    if (misconceptions.length() < 2) {
+      throw new IllegalStateException(id + " needs two misconceptions");
+    }
+    for (Object value : misconceptions) {
+      if (!(value instanceof JSONObject misconception)) {
+        throw new IllegalStateException(id + " has an invalid misconception");
+      }
+      requiredString(misconception, "id", id + " misconception");
+      requiredString(misconception, "explanation", id + " misconception");
+      requiredString(misconception, "retry", id + " misconception");
+    }
+  }
+
+  private static void validateSyllabus(JSONArray modules, JSONArray items) {
     Map<String, JSONObject> byId = new HashMap<>();
     for (Object value : items) {
       JSONObject item = (JSONObject) value;
-      byId.put(item.getString("id"), item);
+      String id = requiredString(item, "id", "item");
+      if (byId.put(id, item) != null) throw new IllegalStateException("Duplicate item " + id);
     }
     Set<String> listed = new HashSet<>();
     Set<String> moduleIds = new HashSet<>();
     for (Object value : modules) {
       JSONObject module = (JSONObject) value;
-      String moduleId = module.getString("id");
+      String moduleId = requiredString(module, "id", "module");
       if (!moduleIds.add(moduleId)) throw new IllegalStateException("Duplicate module " + moduleId);
-      if (!module.has("items")) throw new IllegalStateException(moduleId + " needs an items list");
-      for (Object idValue : module.getJSONArray("items")) {
+      requiredString(module, "title", moduleId);
+      for (Object idValue : requiredArray(module, "items", moduleId)) {
         String id = idValue.toString();
         if (!listed.add(id)) throw new IllegalStateException(id + " is listed twice");
         JSONObject item = byId.get(id);
         if (item == null) throw new IllegalStateException(moduleId + " lists missing item " + id);
-        if (!moduleId.equals(item.getString("module"))) {
-          throw new IllegalStateException(id + " is listed under " + moduleId + " but belongs to " + item.getString("module"));
-        }
+        item.put("module", moduleId);
       }
     }
     for (String id : byId.keySet()) {
       if (!listed.contains(id)) throw new IllegalStateException(id + " is on disk but missing from the syllabus");
     }
-    Path modulesDir = root.resolve("modules");
-    if (!Files.isDirectory(modulesDir)) return;
-    try (var files = Files.walk(modulesDir)) {
-      files.filter(path -> path.getFileName().toString().equals("module.json"))
-          .forEach(path -> checkModuleFile(path, byId));
-    }
   }
 
-  private static void checkModuleFile(Path path, Map<String, JSONObject> byId) {
-    try {
-      JSONObject module = new JSONObject(Files.readString(path));
-      if (!module.has("problems")) return;
-      String moduleId = module.getString("id");
-      for (Object value : module.getJSONArray("problems")) {
-        String id = ((JSONObject) value).getString("id");
-        JSONObject item = byId.get(id);
-        if (item == null) throw new IllegalStateException(path + " lists missing item " + id);
-        if (!moduleId.equals(item.getString("module"))) {
-          throw new IllegalStateException(id + " in " + path + " belongs to " + item.getString("module"));
-        }
-      }
-    } catch (IOException exception) {
-      throw new IllegalStateException("Could not read " + path, exception);
+  private static String requiredString(JSONObject object, String field, String owner) {
+    Object value = object.opt(field);
+    if (!(value instanceof String text) || text.isBlank()) {
+      throw new IllegalStateException(owner + " is missing " + field);
     }
+    return text;
+  }
+
+  private static JSONArray requiredArray(JSONObject object, String field, String owner) {
+    Object value = object.opt(field);
+    if (!(value instanceof JSONArray array)) {
+      throw new IllegalStateException(owner + " is missing " + field);
+    }
+    return array;
+  }
+
+  private static JSONObject requiredObject(JSONObject object, String field, String owner) {
+    Object value = object.opt(field);
+    if (!(value instanceof JSONObject result)) {
+      throw new IllegalStateException(owner + " is missing " + field);
+    }
+    return result;
   }
 }

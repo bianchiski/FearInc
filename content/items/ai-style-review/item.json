@@ -1,6 +1,5 @@
 {
   "id": "ai-style-review",
-  "module": "patterns",
   "type": "drill",
   "aiStyled": true,
   "title": "Optional: review a plausible wrong solution",
@@ -18,5 +17,13 @@
   "verified": "2026-10-30",
   "theory": [
     "interview-explanation"
-  ]
+  ],
+  "misconceptions": [
+    {
+      "id": "overflow-is-not-the-only-bug",
+      "explanation": "The midpoint can overflow before the search-loop boundary bug is considered.",
+      "retry": "Rewrite the midpoint without adding low and high directly."
+    }
+  ],
+  "retryPrompt": "State the key distinction in your own words, then retry once."
 }

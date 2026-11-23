@@ -1,6 +1,5 @@
 {
   "id": "docker-image-vs-container",
-  "module": "devops",
   "type": "quiz",
   "title": "Image and container",
   "prompt": "Which statement matches the Docker model?",
@@ -18,5 +17,13 @@
   "verified": "2026-10-30",
   "theory": [
     "docker"
-  ]
+  ],
+  "misconceptions": [
+    {
+      "id": "template-vs-process",
+      "explanation": "An image is packaged input; a container is a running instance created from it.",
+      "retry": "Describe what changes when the same image starts twice."
+    }
+  ],
+  "retryPrompt": "State the key distinction in your own words, then retry once."
 }

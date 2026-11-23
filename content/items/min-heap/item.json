@@ -1,6 +1,5 @@
 {
   "id": "min-heap",
-  "module": "data-structures",
   "type": "code-problem",
   "title": "Binary min-heap",
   "difficulty": "medium",
@@ -37,35 +36,78 @@
     {
       "name": "sorted",
       "call": "{ MinHeap h = new MinHeap(); h.push(3); h.push(1); h.push(2); return h.pop() + \",\" + h.pop() + \",\" + h.pop(); }",
-      "expect": "1,2,3"
+      "expect": "1,2,3",
+      "concept": "heap order and parent indexes",
+      "edgeCase": "sorted scenario"
     },
     {
       "name": "size",
       "call": "{ MinHeap h = new MinHeap(); h.push(2); h.push(1); return String.valueOf(h.size()); }",
-      "expect": "2"
+      "expect": "2",
+      "concept": "heap order and parent indexes",
+      "edgeCase": "size scenario"
     },
     {
       "name": "duplicates",
       "call": "{ MinHeap h = new MinHeap(); h.push(2); h.push(2); return h.pop() + \":\" + h.size(); }",
-      "expect": "2:1"
+      "expect": "2:1",
+      "concept": "heap order and parent indexes",
+      "edgeCase": "duplicate values"
     },
     {
       "name": "negative",
       "call": "{ MinHeap h = new MinHeap(); h.push(4); h.push(-1); return String.valueOf(h.pop()); }",
-      "expect": "-1"
+      "expect": "-1",
+      "concept": "heap order and parent indexes",
+      "edgeCase": "negative value"
     },
     {
       "name": "many",
       "call": "{ MinHeap h = new MinHeap(); for (int i = 10; i >= 1; i--) h.push(i); return String.valueOf(h.pop()); }",
-      "expect": "1"
+      "expect": "1",
+      "concept": "heap order and parent indexes",
+      "edgeCase": "growth boundary"
     },
     {
       "name": "remaining",
       "call": "{ MinHeap h = new MinHeap(); h.push(5); h.push(1); h.pop(); return String.valueOf(h.pop()); }",
-      "expect": "5"
+      "expect": "5",
+      "concept": "heap order and parent indexes",
+      "edgeCase": "remaining scenario"
     }
   ],
   "theory": [
     "heap"
-  ]
+  ],
+  "concept": "heap order and parent indexes",
+  "objective": "Maintain the minimum-at-root invariant while inserting and removing heap values.",
+  "prerequisites": [
+    "dynamic-array"
+  ],
+  "workedExample": [
+    "For a node at index i, its parent is (i - 1) / 2; compare upward after appending a new value.",
+    "To remove the minimum, move the last value to the root and swap it downward with its smaller child until heap order returns."
+  ],
+  "recallPrompt": "Why must sift-down choose the smaller child when both children exist?",
+  "misconceptions": [
+    {
+      "id": "swap-first-child",
+      "explanation": "Choosing the left child without comparing can leave a smaller right child above the parent.",
+      "retry": "Compare both children before choosing the next swap target."
+    },
+    {
+      "id": "remove-without-repair",
+      "explanation": "Moving the last value to the root breaks order until sift-down repairs it.",
+      "retry": "Name the two locations that can violate heap order after pop."
+    }
+  ],
+  "reflectionPrompt": "Relate the array indexes in a heap to the tree shape they represent.",
+  "feedback": {
+    "sorted": "If this fails, revisit heap order and parent indexes and trace the sorted scenario case.",
+    "size": "If this fails, revisit heap order and parent indexes and trace the size scenario case.",
+    "duplicates": "If this fails, revisit heap order and parent indexes and trace the duplicate values case.",
+    "negative": "If this fails, revisit heap order and parent indexes and trace the negative value case.",
+    "many": "If this fails, revisit heap order and parent indexes and trace the growth boundary case.",
+    "remaining": "If this fails, revisit heap order and parent indexes and trace the remaining scenario case."
+  }
 }

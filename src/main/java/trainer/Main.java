@@ -1,105 +1,231 @@
 package trainer;
 
+import java.awt.Desktop;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
 public final class Main {
+  private static final String SESSION_COOKIE = "trainerSession";
+  private static final Map<String, Map<String, Integer>> HINTS_BY_SESSION = new ConcurrentHashMap<>();
   private static JSONObject catalog;
 
   public static void main(String[] args) throws Exception {
-    Store.init();
-    catalog = Catalog.load(Path.of("content"));
     if (args.length > 0 && "--self-check".equals(args[0])) {
+      Store.init();
+      catalog = Catalog.load(root().resolve("content"));
       Judge.selfCheck(catalog.getJSONArray("items"));
       System.out.println("Self-check passed for every reference solution.");
       return;
     }
-    HttpServer server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 8787), 0);
-    server.createContext("/", Main::page);
-    server.createContext("/api/catalog", exchange -> json(exchange, 200, publicCatalog().toString()));
-    server.createContext("/api/judge", Main::judge);
-    server.createContext("/api/hint", Main::hint);
-    server.createContext("/api/check", Main::check);
-    server.createContext("/api/review", Main::review);
-    server.createContext("/api/due", exchange -> json(exchange, 200, Store.due().toString()));
-    server.createContext("/api/mistake", Main::mistake);
-    server.createContext("/api/settings", Main::settings);
-    server.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
+    HttpServer server = createServer(8787);
     server.start();
     System.out.println("Interview Prep Trainer: http://localhost:8787");
+    if (Boolean.getBoolean("trainer.openBrowser")) {
+      openBrowser();
+    }
+  }
+
+  static HttpServer createServer(int port) throws IOException {
+    Store.init();
+    catalog = Catalog.load(root().resolve("content"));
+    HttpServer server = HttpServer.create(
+        new InetSocketAddress(InetAddress.getLoopbackAddress(), port), 0);
+    server.createContext("/", Main::page);
+    server.createContext("/api/catalog", exchange -> api(exchange, Main::catalog));
+    server.createContext("/api/next", exchange -> api(exchange, Main::next));
+    server.createContext("/api/session", exchange -> api(exchange, Main::session));
+    server.createContext("/api/judge", exchange -> api(exchange, Main::judge));
+    server.createContext("/api/hint", exchange -> api(exchange, Main::hint));
+    server.createContext("/api/check", exchange -> api(exchange, Main::check));
+    server.createContext("/api/review", exchange -> api(exchange, Main::review));
+    server.createContext("/api/due", exchange -> api(exchange, Main::due));
+    server.createContext("/api/mistake", exchange -> api(exchange, Main::mistake));
+    server.createContext("/api/settings", exchange -> api(exchange, Main::settings));
+    server.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
+    return server;
+  }
+
+  private interface ApiHandler {
+    void handle(HttpExchange exchange) throws Exception;
+  }
+
+  private static void api(HttpExchange exchange, ApiHandler handler) throws IOException {
+    sessionId(exchange);
+    try {
+      handler.handle(exchange);
+    } catch (RequestHandledException ignored) {
+      // The handler already sent the response.
+    } catch (IllegalArgumentException | JSONException exception) {
+      json(exchange, 400, new JSONObject()
+          .put("error", exception.getMessage() == null ? "Invalid request" : exception.getMessage())
+          .toString());
+    } catch (InterruptedException exception) {
+      Thread.currentThread().interrupt();
+      json(exchange, 500, "{\"error\":\"Interrupted\"}");
+    } catch (Exception exception) {
+      json(exchange, 500, "{\"error\":\"Request failed\"}");
+    }
   }
 
   private static void page(HttpExchange exchange) throws IOException {
     String name = "/".equals(exchange.getRequestURI().getPath()) ? "/index.html" : exchange.getRequestURI().getPath();
-    Path file = Path.of("web").resolve(name.substring(1)).normalize();
-    if (!file.startsWith(Path.of("web")) || !Files.exists(file)) {
+    Path webRoot = root().resolve("web");
+    Path file = webRoot.resolve(name.substring(1)).normalize();
+    if (!file.startsWith(webRoot) || !Files.isRegularFile(file)) {
       json(exchange, 404, "{\"error\":\"Not found\"}");
       return;
     }
     byte[] body = Files.readAllBytes(file);
-    exchange.getResponseHeaders().set("Content-Type", name.endsWith(".html") ? "text/html; charset=utf-8" : "text/plain");
+    String contentType = name.endsWith(".html") ? "text/html; charset=utf-8"
+        : name.endsWith(".js") ? "application/javascript; charset=utf-8"
+        : name.endsWith(".css") ? "text/css; charset=utf-8"
+        : "text/plain; charset=utf-8";
+    exchange.getResponseHeaders().set("Content-Type", contentType);
     exchange.sendResponseHeaders(200, body.length);
     try (OutputStream output = exchange.getResponseBody()) { output.write(body); }
   }
 
-  private static void judge(HttpExchange exchange) throws IOException {
-    JSONObject request = body(exchange);
-    JSONObject item = item(request.getString("id"));
-    try {
-      JSONObject result = Judge.run(item, request.getString("source"));
-      int hints = request.optInt("hintsUsed", 0);
-      if (result.optBoolean("ok")) {
-        Store.recordJudge(item.getString("id"), result.getInt("passed"), result.getInt("total"), hints);
-        if (item.has("solutionC")) result.put("solutionC", item.getString("solutionC"));
-      }
-      int quality = !result.optBoolean("ok") ? 1 : hints == 0 ? 5 : hints == 1 ? 4 : 3;
-      result.put("review", Store.review(item.getString("id"), quality));
-      json(exchange, 200, result.toString());
-    } catch (InterruptedException exception) {
-      Thread.currentThread().interrupt();
-      json(exchange, 500, "{\"error\":\"Interrupted\"}");
+  private static void catalog(HttpExchange exchange) throws IOException {
+    requireMethod(exchange, "GET");
+    json(exchange, 200, publicCatalog().toString());
+  }
+
+  private static void due(HttpExchange exchange) throws IOException {
+    requireMethod(exchange, "GET");
+    json(exchange, 200, Store.due().toString());
+  }
+
+  private static void next(HttpExchange exchange) throws IOException {
+    requireMethod(exchange, "GET");
+    json(exchange, 200, nextAction(Store.settings().optBoolean("aiDrills", false)).toString());
+  }
+
+  private static void session(HttpExchange exchange) throws IOException {
+    if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+      json(exchange, 200, Store.sessionState().toString());
+      return;
     }
+    requireMethod(exchange, "POST");
+    JSONObject request = body(exchange);
+    String step = request.getString("step");
+    if (!Set.of("teach", "recall", "practice", "feedback", "review", "complete").contains(step)) {
+      throw new IllegalArgumentException("Unknown session step");
+    }
+    String id = request.optString("id", "");
+    if ("complete".equals(step)) {
+      id = null;
+    } else {
+      item(id);
+    }
+    Store.saveSession(id, step);
+    json(exchange, 200, Store.sessionState().toString());
+  }
+
+  private static void judge(HttpExchange exchange) throws IOException, InterruptedException {
+    requireMethod(exchange, "POST");
+    JSONObject request = body(exchange);
+    String id = request.getString("id");
+    JSONObject item = item(id);
+    String session = sessionId(exchange);
+    int hints = hintsFor(session).getOrDefault(id, 0);
+    JSONObject result;
+    try {
+      result = Judge.run(item, request.getString("source"));
+    } finally {
+      hintsFor(session).remove(id);
+    }
+    int quality = ReviewPolicy.forJudge(result.optBoolean("ok"), hints);
+    JSONArray concepts = concepts(item);
+    JSONObject review = Store.review(id, concepts, quality);
+    Store.recordAttempt(id, concepts, "code", review.getInt("quality"), hints, result.optBoolean("ok"));
+    result.put("review", review);
+    result.put("nextStep", result.optBoolean("ok")
+        ? "Explain the invariant, then complete the review."
+        : "Review the highlighted feedback and retry.");
+    if (result.optBoolean("ok") && item.has("solutionC")) {
+      result.put("solutionC", item.getString("solutionC"));
+    }
+    json(exchange, 200, result.toString());
   }
 
   private static void hint(HttpExchange exchange) throws IOException {
+    requireMethod(exchange, "POST");
     JSONObject request = body(exchange);
-    JSONArray hints = item(request.getString("id")).getJSONArray("hints");
-    int level = request.getInt("level");
-    if (level < 0 || level >= hints.length()) { json(exchange, 400, "{\"error\":\"No such hint\"}"); return; }
-    json(exchange, 200, new JSONObject().put("hint", hints.getString(level)).put("level", level + 1).put("total", hints.length()).toString());
+    String id = request.getString("id");
+    JSONArray hints = item(id).getJSONArray("hints");
+    Map<String, Integer> sessionHints = hintsFor(sessionId(exchange));
+    synchronized (sessionHints) {
+      int level = sessionHints.getOrDefault(id, 0);
+      if (level >= hints.length()) throw new IllegalArgumentException("No more hints");
+      sessionHints.put(id, level + 1);
+      json(exchange, 200, new JSONObject()
+          .put("hint", hints.getString(level))
+          .put("level", level + 1)
+          .put("total", hints.length())
+          .toString());
+    }
   }
 
   private static void check(HttpExchange exchange) throws IOException {
+    requireMethod(exchange, "POST");
     JSONObject request = body(exchange);
     JSONObject item = item(request.getString("id"));
     String given = request.optString("answer", "").trim().toLowerCase();
     boolean correct = given.equals(item.getString("answer").trim().toLowerCase());
-    if (correct) Store.review(item.getString("id"), 5);
-    json(exchange, 200, new JSONObject().put("correct", correct).put("explanation", item.optString("explanation", "")).toString());
+    boolean revealExplanation = correct || request.optBoolean("retry", false)
+        || !item.has("misconceptions");
+    String id = item.getString("id");
+    JSONArray concepts = concepts(item);
+    JSONObject review = Store.review(id, concepts, ReviewPolicy.forAnswer(correct));
+    Store.recordAttempt(id, concepts, "recall", review.getInt("quality"), 0, correct);
+    JSONObject response = new JSONObject()
+        .put("correct", correct)
+        .put("explanation", revealExplanation
+            ? item.optString("explanation", "")
+            : "Not yet. Use the retry prompt, then try the question once more.")
+        .put("review", review);
+    if (!correct) addRemediation(response, item);
+    json(exchange, 200, response.toString());
   }
 
   private static void review(HttpExchange exchange) throws IOException {
+    requireMethod(exchange, "POST");
     JSONObject request = body(exchange);
-    json(exchange, 200, Store.review(request.getString("id"), request.getInt("quality")).toString());
+    String id = request.getString("id");
+    JSONObject item = item(id);
+    JSONArray concepts = concepts(item);
+    JSONObject review = Store.review(id, concepts, request.getInt("quality"));
+    Store.recordAttempt(id, concepts, "explain", review.getInt("quality"), 0,
+        review.getInt("quality") >= 3);
+    Store.saveSession(null, "complete");
+    json(exchange, 200, review.toString());
   }
 
   private static void mistake(HttpExchange exchange) throws IOException {
+    requireMethod(exchange, "POST");
     JSONObject request = body(exchange);
-    Store.mistake(request.getString("id"), request.getString("mistake"));
+    String id = request.getString("id");
+    item(id);
+    Store.mistake(id, request.getString("mistake"));
     json(exchange, 200, new JSONObject().put("ok", true).put("weakSpots", Store.mistakes()).toString());
   }
 
@@ -107,16 +233,53 @@ public final class Main {
     if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
       JSONObject request = body(exchange);
       if (request.has("aiDrills")) Store.setFlag("aiDrills", request.getBoolean("aiDrills"));
-      if (request.has("aiFeedback")) Store.setFlag("aiFeedback", request.getBoolean("aiFeedback"));
+    } else if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+      requireMethod(exchange, "GET");
     }
     json(exchange, 200, Store.settings().toString());
   }
 
+  private static void requireMethod(HttpExchange exchange, String method) throws IOException {
+    if (method.equalsIgnoreCase(exchange.getRequestMethod())) return;
+    exchange.getResponseHeaders().set("Allow", method);
+    json(exchange, 405, "{\"error\":\"Method not allowed\"}");
+    throw new RequestHandledException();
+  }
+
+  private static String sessionId(HttpExchange exchange) {
+    String cookie = exchange.getRequestHeaders().getFirst("Cookie");
+    if (cookie != null) {
+      for (String part : cookie.split(";")) {
+        String[] pair = part.trim().split("=", 2);
+        if (pair.length == 2 && SESSION_COOKIE.equals(pair[0])) {
+          try {
+            String id = UUID.fromString(pair[1]).toString();
+            HINTS_BY_SESSION.computeIfAbsent(id, ignored -> new ConcurrentHashMap<>());
+            return id;
+          } catch (IllegalArgumentException ignored) {
+            break;
+          }
+        }
+      }
+    }
+    String id = UUID.randomUUID().toString();
+    HINTS_BY_SESSION.put(id, new ConcurrentHashMap<>());
+    exchange.getResponseHeaders().set(
+        "Set-Cookie", SESSION_COOKIE + "=" + id + "; Path=/; SameSite=Strict");
+    return id;
+  }
+
+  private static Map<String, Integer> hintsFor(String session) {
+    return HINTS_BY_SESSION.computeIfAbsent(session, ignored -> new ConcurrentHashMap<>());
+  }
+
   private static JSONObject publicCatalog() {
     JSONArray items = new JSONArray();
-    boolean aiDrills = Store.settings().optBoolean("aiDrills", false);
+    JSONObject settings = Store.settings();
+    JSONArray masteredItems = Store.mastered();
+    boolean aiDrills = settings.optBoolean("aiDrills", false);
     Set<String> mastered = new HashSet<>();
-    for (Object value : Store.mastered()) mastered.add(String.valueOf(value));
+    for (Object value : masteredItems) mastered.add(String.valueOf(value));
     for (Object value : catalog.getJSONArray("items")) {
       JSONObject item = (JSONObject) value;
       if (item.optBoolean("aiStyled", false) && !aiDrills) continue;
@@ -127,27 +290,153 @@ public final class Main {
         .put("items", items)
         .put("planner", catalog.getJSONObject("planner"))
         .put("due", Store.due())
-        .put("mastered", Store.mastered())
+        .put("mastered", masteredItems)
+        .put("concepts", Store.conceptReadiness())
+        .put("summary", Store.learningSummary())
+        .put("session", Store.sessionState())
+        .put("next", nextAction(aiDrills))
         .put("weakSpots", Store.mistakes())
-        .put("settings", Store.settings());
+        .put("settings", settings);
+  }
+
+  private static Path root() {
+    Path configured = Path.of(System.getProperty("trainer.root", ".")).toAbsolutePath().normalize();
+    if (Files.isDirectory(configured.resolve("content"))) return configured;
+    Path appDirectory = configured.resolve("app");
+    if (Files.isDirectory(appDirectory.resolve("content"))) return appDirectory;
+    return configured;
+  }
+
+  private static void openBrowser() {
+    try {
+      if (Desktop.isDesktopSupported()) {
+        Desktop.getDesktop().browse(URI.create("http://localhost:8787/"));
+      }
+    } catch (Exception ignored) {
+      // Opening a browser is optional; the server remains available if it fails.
+    }
   }
 
   private static JSONObject item(String id) {
+    JSONObject item = findItem(id);
+    if (item != null) return item;
+    throw new IllegalArgumentException("Unknown item: " + id);
+  }
+
+  private static JSONObject findItem(String id) {
     for (Object value : catalog.getJSONArray("items")) {
       JSONObject item = (JSONObject) value;
       if (id.equals(item.getString("id"))) return item;
     }
-    throw new IllegalArgumentException("Unknown item: " + id);
+    return null;
+  }
+
+  private static JSONArray concepts(JSONObject item) {
+    if (item.has("concept")) return new JSONArray().put(item.getString("concept"));
+    JSONArray concepts = item.optJSONArray("concepts");
+    return concepts == null ? new JSONArray().put(item.getString("id"))
+        : new JSONArray(concepts.toString());
+  }
+
+  private static void addRemediation(JSONObject response, JSONObject item) {
+    JSONArray misconceptions = item.optJSONArray("misconceptions");
+    if (misconceptions == null || misconceptions.isEmpty()) return;
+    JSONObject misconception = misconceptions.getJSONObject(0);
+    response.put("remediation", misconception.optString("explanation", ""));
+    response.put("retryPrompt", misconception.optString("retry", ""));
+  }
+
+  private static JSONObject nextAction(boolean aiDrills) {
+    JSONObject state = Store.sessionState();
+    String stateItem = state.optString("item", "");
+    String stateStep = state.optString("step", "");
+    if (!stateItem.isBlank() && !"complete".equals(stateStep)) {
+      JSONObject item = findItem(stateItem);
+      if (item != null && visible(item, aiDrills)) {
+        return action(item, stateStep, "resume",
+            "Resume your unfinished " + item.getString("title") + ".");
+      }
+    }
+
+    for (Object value : Store.due()) {
+      JSONObject due = (JSONObject) value;
+      JSONObject item = findItem(due.getString("item"));
+      if (item != null && visible(item, aiDrills)) {
+        return action(item, "teach", "review", "This item is due for review today.");
+      }
+    }
+
+    Set<String> masteredItems = new HashSet<>();
+    for (Object value : Store.mastered()) masteredItems.add(value.toString());
+    Set<String> masteredConcepts = new HashSet<>();
+    for (Object value : Store.conceptReadiness()) {
+      JSONObject concept = (JSONObject) value;
+      if ("mastered".equals(concept.getString("status"))) {
+        masteredConcepts.add(concept.getString("concept"));
+      }
+    }
+    for (Object moduleValue : catalog.getJSONArray("modules")) {
+      JSONObject module = (JSONObject) moduleValue;
+      for (Object idValue : module.getJSONArray("items")) {
+        JSONObject item = findItem(idValue.toString());
+        if (item != null && visible(item, aiDrills) && !"lesson".equals(item.getString("type"))
+            && ready(item, masteredItems, masteredConcepts)) {
+          return action(item, "teach", "new", "Next prerequisite-ready practice.");
+        }
+      }
+    }
+
+    for (Object value : catalog.getJSONArray("items")) {
+      JSONObject item = (JSONObject) value;
+      if (visible(item, aiDrills) && !"lesson".equals(item.getString("type"))) {
+        return action(item, "teach", "preview", "Preview the next item while you build prerequisites.");
+      }
+    }
+    return new JSONObject()
+        .put("kind", "complete")
+        .put("reason", "Everything currently visible is complete.");
+  }
+
+  private static boolean visible(JSONObject item, boolean aiDrills) {
+    return !item.optBoolean("aiStyled", false) || aiDrills;
+  }
+
+  private static boolean ready(JSONObject item, Set<String> masteredItems, Set<String> masteredConcepts) {
+    JSONArray prerequisites = item.optJSONArray("prerequisites");
+    if (prerequisites == null) return true;
+    for (Object value : prerequisites) {
+      String prerequisite = value.toString();
+      if (!masteredItems.contains(prerequisite) && !masteredConcepts.contains(prerequisite)) return false;
+    }
+    return true;
+  }
+
+  private static JSONObject action(JSONObject item, String step, String kind, String reason) {
+    int minutes = "code-problem".equals(item.getString("type")) ? 20 : 10;
+    return new JSONObject()
+        .put("kind", kind)
+        .put("item", item.getString("id"))
+        .put("title", item.getString("title"))
+        .put("step", step)
+        .put("reason", reason)
+        .put("estimatedMinutes", minutes)
+        .put("objective", item.optString("objective", item.getString("title")));
   }
 
   private static JSONObject body(HttpExchange exchange) throws IOException {
-    return new JSONObject(new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8));
+    byte[] bytes = exchange.getRequestBody().readAllBytes();
+    if (bytes.length == 0) throw new IllegalArgumentException("Request body is required");
+    return new JSONObject(new String(bytes, StandardCharsets.UTF_8));
   }
 
   private static void json(HttpExchange exchange, int status, String body) throws IOException {
     byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
-    exchange.getResponseHeaders().set("Content-Type", "application/json");
+    exchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
     exchange.sendResponseHeaders(status, bytes.length);
     try (OutputStream output = exchange.getResponseBody()) { output.write(bytes); }
+  }
+
+  private static final class RequestHandledException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
   }
 }

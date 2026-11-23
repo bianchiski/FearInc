@@ -1,6 +1,5 @@
 {
   "id": "owasp-2025-first",
-  "module": "security",
   "type": "quiz",
   "title": "OWASP Top 10:2025",
   "prompt": "Which risk is A01 in the OWASP Top 10:2025?",
@@ -17,5 +16,13 @@
   "verified": "2026-10-30",
   "theory": [
     "owasp"
-  ]
+  ],
+  "misconceptions": [
+    {
+      "id": "edition-mixup",
+      "explanation": "OWASP categories and numbers can change by edition; identify the 2025 list before recalling older positions.",
+      "retry": "State A01 and one nearby category from the same edition."
+    }
+  ],
+  "retryPrompt": "State the key distinction in your own words, then retry once."
 }

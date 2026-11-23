@@ -1,6 +1,5 @@
 {
   "id": "iam-least-privilege",
-  "module": "aws",
   "type": "quiz",
   "title": "IAM least privilege",
   "prompt": "What does an AWS IAM permissions boundary do?",
@@ -17,5 +16,13 @@
   "verified": "2026-10-30",
   "theory": [
     "least-privilege"
-  ]
+  ],
+  "misconceptions": [
+    {
+      "id": "boundary-grants-access",
+      "explanation": "A permissions boundary limits the maximum grant but does not grant permissions by itself.",
+      "retry": "Separate the policy that grants access from the policy that caps it."
+    }
+  ],
+  "retryPrompt": "State the key distinction in your own words, then retry once."
 }

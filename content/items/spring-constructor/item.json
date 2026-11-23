@@ -1,6 +1,5 @@
 {
   "id": "spring-constructor",
-  "module": "spring",
   "type": "quiz",
   "title": "Spring injection",
   "prompt": "Which dependency style does current Spring Boot guidance generally recommend?",
@@ -18,5 +17,13 @@
   "verified": "2026-10-30",
   "theory": [
     "dependency-injection"
-  ]
+  ],
+  "misconceptions": [
+    {
+      "id": "injection-is-not-field-mutation",
+      "explanation": "Constructor injection makes required dependencies explicit and supports immutable fields.",
+      "retry": "Explain what a class can guarantee immediately after construction."
+    }
+  ],
+  "retryPrompt": "State the key distinction in your own words, then retry once."
 }
