@@ -25,5 +25,35 @@
       "retry": "Describe what the current event handler reads after calling the setter."
     }
   ],
-  "retryPrompt": "State the key distinction in your own words, then retry once."
+  "retryPrompt": "State the key distinction in your own words, then retry once.",
+  "track": "TypeScript & React",
+  "tier": "intermediate",
+  "tags": [
+    "typescript-react",
+    "quiz",
+    "intermediate"
+  ],
+  "eli5": {
+    "analogy": "Think of React render snapshot as a small tool with one job.",
+    "definition": "What does calling a state setter do to the state value already in the current render?",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "React render snapshot",
+    "shortAnswer": "What does calling a state setter do to the state value already in the current render?",
+    "deepAnswer": "Current React 19 documentation says rendering calls the component and that render keeps one state snapshot. Hooks must be called in the same order at the top level so React can match each stored state cell."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

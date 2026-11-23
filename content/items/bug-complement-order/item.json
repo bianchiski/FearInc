@@ -19,5 +19,35 @@
       "retry": "For [3,3], decide whether lookup or storage comes first and why."
     }
   ],
-  "retryPrompt": "State the key distinction in your own words, then retry once."
+  "retryPrompt": "State the key distinction in your own words, then retry once.",
+  "track": "Backend",
+  "tier": "intermediate",
+  "tags": [
+    "patterns",
+    "drill",
+    "intermediate"
+  ],
+  "eli5": {
+    "analogy": "Think of Find the bug as a small tool with one job.",
+    "definition": "A pair search stores the current value before looking for its complement. For input [3,3] and target 6, what goes wrong?",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "Find the bug",
+    "shortAnswer": "A pair search stores the current value before looking for its complement. For input [3,3] and target 6, what goes wrong?",
+    "deepAnswer": "The first 3 is stored before the complement is checked. When the same element is considered, the map points back at its own index, so the solution uses one position twice."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

@@ -90,6 +90,22 @@ public final class Catalog {
       for (String field : REQUIRED) {
         requiredString(item, field, id);
       }
+      requiredString(item, "track", id);
+      requiredTier(item, id);
+      requiredArray(item, "tags", id);
+      requiredObject(item, "eli5", id);
+      requiredString(item.getJSONObject("eli5"), "analogy", id + " eli5");
+      requiredString(item.getJSONObject("eli5"), "definition", id + " eli5");
+      requiredString(item.getJSONObject("eli5"), "example", id + " eli5");
+      requiredString(item.getJSONObject("eli5"), "limits", id + " eli5");
+      requiredObject(item, "interview", id);
+      JSONObject interview = item.getJSONObject("interview");
+      requiredString(interview, "question", id + " interview");
+      requiredString(interview, "shortAnswer", id + " interview");
+      requiredString(interview, "deepAnswer", id + " interview");
+      requiredArray(item, "tips", id);
+      requiredArray(item, "commonMistakes", id);
+      requiredArray(item, "followUps", id);
       JSONArray sources = requiredArray(item, "sources", id);
       JSONArray theory = requiredArray(item, "theory", id);
       if (theory.isEmpty() || item.optString("theoryText").isBlank()) {
@@ -123,6 +139,13 @@ public final class Catalog {
           validateMisconceptions(item, id);
         }
       }
+    }
+  }
+
+  private static void requiredTier(JSONObject item, String id) {
+    String tier = requiredString(item, "tier", id);
+    if (!Set.of("beginner", "intermediate", "experienced").contains(tier)) {
+      throw new IllegalStateException(id + " has an invalid tier");
     }
   }
 

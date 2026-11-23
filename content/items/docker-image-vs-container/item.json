@@ -25,5 +25,35 @@
       "retry": "Describe what changes when the same image starts twice."
     }
   ],
-  "retryPrompt": "State the key distinction in your own words, then retry once."
+  "retryPrompt": "State the key distinction in your own words, then retry once.",
+  "track": "Backend",
+  "tier": "intermediate",
+  "tags": [
+    "devops",
+    "quiz",
+    "intermediate"
+  ],
+  "eli5": {
+    "analogy": "Think of Image and container as a small tool with one job.",
+    "definition": "Which statement matches the Docker model?",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "Image and container",
+    "shortAnswer": "Which statement matches the Docker model?",
+    "deepAnswer": "Docker's documentation distinguishes an image, the packaged filesystem and configuration, from a container, a runnable instance of that image. Containers share the host kernel."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

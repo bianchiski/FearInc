@@ -107,5 +107,35 @@
     "grows": "If this fails, revisit array capacity and order and trace the capacity boundary case.",
     "zero": "If this fails, revisit array capacity and order and trace the zero value case.",
     "negative": "If this fails, revisit array capacity and order and trace the negative value case."
-  }
+  },
+  "track": "Backend",
+  "tier": "beginner",
+  "tags": [
+    "data-structures",
+    "code-problem",
+    "beginner"
+  ],
+  "eli5": {
+    "analogy": "Think of Dynamic array as a small tool with one job.",
+    "definition": "Preserve size and element order while growing an integer array.",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "Dynamic array",
+    "shortAnswer": "Preserve size and element order while growing an integer array.",
+    "deepAnswer": "Preserve size and element order while growing an integer array."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

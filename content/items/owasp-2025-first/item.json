@@ -24,5 +24,35 @@
       "retry": "State A01 and one nearby category from the same edition."
     }
   ],
-  "retryPrompt": "State the key distinction in your own words, then retry once."
+  "retryPrompt": "State the key distinction in your own words, then retry once.",
+  "track": "Backend",
+  "tier": "intermediate",
+  "tags": [
+    "security",
+    "quiz",
+    "intermediate"
+  ],
+  "eli5": {
+    "analogy": "Think of OWASP Top 10:2025 as a small tool with one job.",
+    "definition": "Which risk is A01 in the OWASP Top 10:2025?",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "OWASP Top 10:2025",
+    "shortAnswer": "Which risk is A01 in the OWASP Top 10:2025?",
+    "deepAnswer": "OWASP Top 10:2025 keeps Broken Access Control at A01. A02 is Security Misconfiguration and A03 is Software Supply Chain Failures. Injection is A05 in this edition."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

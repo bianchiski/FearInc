@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Interview Prep Trainer</title>
+  <link rel="stylesheet" href="/styles.css">
   <style>
     :root { color: #e9efff; background: #080d18; font: 15px/1.5 Inter, Segoe UI, sans-serif; }
     * { box-sizing: border-box; }
@@ -38,18 +39,24 @@
 </head>
 <body>
 <header>
-  <div><h1>Interview Prep Trainer</h1><p class="muted">Judged practice, retrieval, and source-checked lessons.</p></div>
-  <label class="muted"><input id="ai" type="checkbox"> Optional AI-style drills</label>
+  <div><p class="eyebrow">FEARINC / INTERVIEW LAB</p><h1>Learn the why. Practice the how.</h1><p class="muted">A backend-first path from beginner fundamentals to confident interview answers.</p></div>
+  <div class="header-actions"><input id="search" type="search" placeholder="Search concepts, questions…" aria-label="Search"><label class="muted"><input id="ai" type="checkbox"> AI drills</label></div>
 </header>
 <main>
   <aside>
+    <nav class="panel nav" aria-label="Primary navigation">
+      <button class="nav-button active" data-view="dashboard">Overview</button>
+      <button class="nav-button" data-view="questions">Interview questions</button>
+      <button class="nav-button" data-view="eli5">ELI5 library</button>
+      <button class="nav-button" data-view="progress">Progress</button>
+    </nav>
     <div class="panel"><h3>Today's session</h3><div id="session-content"></div></div>
     <div class="panel"><h3>Due</h3><div id="due"></div></div>
     <div class="panel"><h3>Modules</h3><div id="modules"></div></div>
     <div class="panel"><h3>Learning signals</h3><div id="summary"></div></div>
     <div class="panel"><h3>Planner</h3><div id="planner" class="muted"></div></div>
   </aside>
-  <section id="work" class="panel">Loading the catalog…</section>
+  <section id="work" class="panel workspace" aria-live="polite">Loading the catalog…</section>
 </main>
 <script type="module" src="/app.js"></script>
 </body>

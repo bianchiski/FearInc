@@ -129,6 +129,22 @@ class LearningLoopHttpTest {
     assertTrue(wrongMethod.body().contains("Method not allowed"));
   }
 
+  @Test
+  void searchBookmarksAndProfileAreAvailable() throws Exception {
+    HttpResponse<String> search = get("/api/search?q=HashMap");
+    assertEquals(200, search.statusCode());
+    assertTrue(search.body().contains("hashmap-shape"));
+
+    JSONObject saved = new JSONObject(post("/api/bookmarks",
+        new JSONObject().put("item", "hashmap-shape").put("saved", true)).body());
+    assertTrue(saved.getJSONArray("items").toList().contains("hashmap-shape"));
+
+    JSONObject profile = new JSONObject(post("/api/profile",
+        new JSONObject().put("tier", "intermediate")
+            .put("tracks", new org.json.JSONArray().put("Backend"))).body());
+    assertEquals("intermediate", profile.getString("tier"));
+  }
+
   private HttpResponse<String> get(String path) throws Exception {
     return send("GET", path, null);
   }

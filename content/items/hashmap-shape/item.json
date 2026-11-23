@@ -24,5 +24,35 @@
       "retry": "State the capacity and load factor separately before retrying."
     }
   ],
-  "retryPrompt": "State the key distinction in your own words, then retry once."
+  "retryPrompt": "State the key distinction in your own words, then retry once.",
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "low-level-java",
+    "quiz",
+    "experienced"
+  ],
+  "eli5": {
+    "analogy": "Think of HashMap defaults as a small tool with one job.",
+    "definition": "A new HashMap() in Java 25 starts with which capacity and load factor?",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "HashMap defaults",
+    "shortAnswer": "A new HashMap() in Java 25 starts with which capacity and load factor?",
+    "deepAnswer": "The Java 25 HashMap documentation says the no-argument constructor uses capacity 16 and load factor 0.75. When entries exceed capacity times load factor, the table rehashes to about twice as many buckets."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

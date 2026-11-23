@@ -109,5 +109,35 @@
     "negative": "If this fails, revisit heap order and parent indexes and trace the negative value case.",
     "many": "If this fails, revisit heap order and parent indexes and trace the growth boundary case.",
     "remaining": "If this fails, revisit heap order and parent indexes and trace the remaining scenario case."
-  }
+  },
+  "track": "Backend",
+  "tier": "beginner",
+  "tags": [
+    "data-structures",
+    "code-problem",
+    "beginner"
+  ],
+  "eli5": {
+    "analogy": "Think of Binary min-heap as a small tool with one job.",
+    "definition": "Maintain the minimum-at-root invariant while inserting and removing heap values.",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "Binary min-heap",
+    "shortAnswer": "Maintain the minimum-at-root invariant while inserting and removing heap values.",
+    "deepAnswer": "Maintain the minimum-at-root invariant while inserting and removing heap values."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

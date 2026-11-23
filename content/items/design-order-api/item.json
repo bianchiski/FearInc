@@ -19,5 +19,35 @@
       "retry": "Name the request key that lets the server return the original result."
     }
   ],
-  "retryPrompt": "State the key distinction in your own words, then retry once."
+  "retryPrompt": "State the key distinction in your own words, then retry once.",
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "spring",
+    "drill",
+    "experienced"
+  ],
+  "eli5": {
+    "analogy": "Think of Order status API as a small tool with one job.",
+    "definition": "Name the first reliability property a repeated POST that creates an order must have.",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "Order status API",
+    "shortAnswer": "Name the first reliability property a repeated POST that creates an order must have.",
+    "deepAnswer": "A client retry must not create a second order. Carry an idempotency key, store the first result, and return that result for the same key. Then add persistence, authorization, and logs."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

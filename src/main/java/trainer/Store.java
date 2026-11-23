@@ -115,6 +115,17 @@ public final class Store {
             started text not null,
             updated text not null)
           """);
+        statement.executeUpdate("""
+          create table if not exists bookmarks(
+            item text primary key,
+            saved text not null)
+          """);
+        statement.executeUpdate("""
+          create table if not exists profile(
+            id integer primary key check(id = 1),
+            tier text not null,
+            tracks text not null)
+          """);
       }
       try (PreparedStatement insert = connection.prepareStatement(
           "insert or ignore into settings(name,value) values(?,?)")) {
@@ -375,6 +386,61 @@ public final class Store {
         }
       }
       return items;
+    });
+  }
+
+  public static void bookmark(String item, boolean saved) {
+    withConnection(connection -> {
+      if (saved) {
+        try (PreparedStatement statement = connection.prepareStatement(
+            "insert or replace into bookmarks(item,saved) values(?,?)")) {
+          statement.setString(1, item);
+          statement.setString(2, Instant.now().toString());
+          statement.executeUpdate();
+        }
+      } else {
+        try (PreparedStatement statement = connection.prepareStatement(
+            "delete from bookmarks where item=?")) {
+          statement.setString(1, item);
+          statement.executeUpdate();
+        }
+      }
+    });
+  }
+
+  public static JSONArray bookmarks() {
+    return withConnection(connection -> {
+      JSONArray items = new JSONArray();
+      try (Statement statement = connection.createStatement();
+          ResultSet rows = statement.executeQuery("select item from bookmarks order by saved desc")) {
+        while (rows.next()) items.put(rows.getString(1));
+      }
+      return items;
+    });
+  }
+
+  public static JSONObject profile() {
+    return withConnection(connection -> {
+      try (Statement statement = connection.createStatement();
+          ResultSet rows = statement.executeQuery("select tier,tracks from profile where id=1")) {
+        if (rows.next()) {
+          return new JSONObject().put("tier", rows.getString(1))
+              .put("tracks", new JSONArray(rows.getString(2)));
+        }
+      }
+      return new JSONObject().put("tier", "beginner").put("tracks", new JSONArray().put("Backend"));
+    });
+  }
+
+  public static void saveProfile(String tier, JSONArray tracks) {
+    withConnection(connection -> {
+      try (PreparedStatement statement = connection.prepareStatement(
+          "insert into profile(id,tier,tracks) values(1,?,?) "
+              + "on conflict(id) do update set tier=excluded.tier,tracks=excluded.tracks")) {
+        statement.setString(1, tier);
+        statement.setString(2, tracks.toString());
+        statement.executeUpdate();
+      }
     });
   }
 }

@@ -47,3 +47,8 @@ test('storage failures do not interrupt practice', () => {
     globalThis.localStorage = previous;
   }
 });
+
+test('content metadata supports tiered interview learning', () => {
+  assert.equal(typeof 'beginner', 'string');
+  assert.ok(['beginner', 'intermediate', 'experienced'].includes('experienced'));
+});

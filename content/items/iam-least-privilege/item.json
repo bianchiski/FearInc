@@ -24,5 +24,35 @@
       "retry": "Separate the policy that grants access from the policy that caps it."
     }
   ],
-  "retryPrompt": "State the key distinction in your own words, then retry once."
+  "retryPrompt": "State the key distinction in your own words, then retry once.",
+  "track": "AWS",
+  "tier": "intermediate",
+  "tags": [
+    "aws",
+    "quiz",
+    "intermediate"
+  ],
+  "eli5": {
+    "analogy": "Think of IAM least privilege as a small tool with one job.",
+    "definition": "What does an AWS IAM permissions boundary do?",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "IAM least privilege",
+    "shortAnswer": "What does an AWS IAM permissions boundary do?",
+    "deepAnswer": "IAM documents a permissions boundary as a managed policy that limits the permissions identity-based policies can grant. It does not itself grant permissions. Least privilege means starting from the actions a task needs."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

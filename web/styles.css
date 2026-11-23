@@ -1,0 +1,33 @@
+:root {
+  --bg: #07111f;
+  --panel: #101d31;
+  --panel-2: #152743;
+  --line: #294468;
+  --text: #edf4ff;
+  --muted: #9bb0d0;
+  --accent: #7c8cff;
+  --mint: #4fe0b2;
+  --warning: #ffc66d;
+}
+
+body { background: radial-gradient(circle at 80% -10%, #214477, transparent 38%), var(--bg); }
+header { background: #0b1729e6; backdrop-filter: blur(16px); }
+.eyebrow { color: var(--mint); font-size: 11px; font-weight: 800; letter-spacing: .18em; margin: 0 0 8px; }
+.header-actions { display: flex; align-items: center; gap: 14px; }
+input[type="search"] { width: min(300px, 35vw); border: 1px solid var(--line); border-radius: 12px; background: #091525; color: var(--text); padding: 11px 14px; }
+.nav { display: grid; gap: 6px; }
+.nav-button { width: 100%; margin: 0; background: transparent; color: var(--muted); text-align: left; }
+.nav-button.active, .nav-button:hover { background: var(--panel-2); color: var(--text); }
+.workspace { min-height: 620px; }
+.hero { display: flex; justify-content: space-between; gap: 24px; align-items: end; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 18px 0; }
+.metric { padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: #0d1a2d; }
+.metric strong { display: block; font-size: 25px; color: var(--text); }
+.badge { display: inline-block; border-radius: 999px; background: #263a61; color: #bfceff; padding: 3px 8px; font-size: 12px; }
+.badge.beginner { color: var(--mint); } .badge.intermediate { color: var(--warning); } .badge.experienced { color: #d3b9ff; }
+.question-card { padding: 16px; margin: 10px 0; border: 1px solid var(--line); border-radius: 14px; background: #0c192b; }
+.question-card h3 { color: var(--text); text-transform: none; letter-spacing: 0; font-size: 17px; }
+.question-card p { color: var(--muted); }
+.pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+@media (max-width: 860px) { .header-actions { flex-direction: column; align-items: stretch; } input[type="search"] { width: 100%; } .metric-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }

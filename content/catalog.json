@@ -1,15 +1,120 @@
 {
   "modules": [
-    {"id":"foundations","title":"Foundations","track":"Core","items":["big-o-reading","pair-indices","explain-pair-indices","duplicate-values","sorted-search","bracket-balance"]},
-    {"id":"data-structures","title":"Data Structures from Scratch","track":"Core","items":["dynamic-array","linked-list","int-stack","int-queue","open-map","min-heap","binary-search-tree","graph-search","debug-empty-pop"]},
-    {"id":"patterns","title":"Algorithm Patterns","track":"Core","items":["fixed-window-sum","climbing-stairs","bug-complement-order","ai-style-review"]},
-    {"id":"low-level-java","title":"Low-level Java","track":"Core","items":["hashmap-shape"]},
-    {"id":"systems","title":"Systems and Very Low Level","track":"Core","items":["byte-order"]},
-    {"id":"sql","title":"SQL and Databases","track":"Fullstack","items":["sql-index-choice"]},
-    {"id":"spring","title":"Spring Boot","track":"Fullstack","items":["spring-constructor","design-order-api"]},
-    {"id":"typescript-react","title":"TypeScript and React","track":"Fullstack","items":["react-snapshot"]},
-    {"id":"aws","title":"AWS","track":"Cloud","items":["iam-least-privilege"]},
-    {"id":"security","title":"Security","track":"Cloud","items":["owasp-2025-first"]},
-    {"id":"devops","title":"DevOps","track":"Cloud","items":["docker-image-vs-container"]}
+    {
+      "id": "foundations",
+      "title": "Foundations",
+      "items": [
+        "big-o-reading",
+        "pair-indices",
+        "explain-pair-indices",
+        "duplicate-values",
+        "sorted-search",
+        "bracket-balance"
+      ],
+      "track": "Backend",
+      "order": 1
+    },
+    {
+      "id": "data-structures",
+      "title": "Data Structures from Scratch",
+      "items": [
+        "dynamic-array",
+        "linked-list",
+        "int-stack",
+        "int-queue",
+        "open-map",
+        "min-heap",
+        "binary-search-tree",
+        "graph-search",
+        "debug-empty-pop"
+      ],
+      "track": "Backend",
+      "order": 2
+    },
+    {
+      "id": "patterns",
+      "title": "Algorithm Patterns",
+      "items": [
+        "fixed-window-sum",
+        "climbing-stairs",
+        "bug-complement-order",
+        "ai-style-review"
+      ],
+      "track": "Backend",
+      "order": 3
+    },
+    {
+      "id": "low-level-java",
+      "title": "Low-level Java",
+      "items": [
+        "hashmap-shape"
+      ],
+      "track": "Backend",
+      "order": 4
+    },
+    {
+      "id": "systems",
+      "title": "Systems and Very Low Level",
+      "items": [
+        "byte-order"
+      ],
+      "track": "Backend",
+      "order": 5
+    },
+    {
+      "id": "sql",
+      "title": "SQL and Databases",
+      "items": [
+        "sql-index-choice"
+      ],
+      "track": "Backend",
+      "order": 6
+    },
+    {
+      "id": "spring",
+      "title": "Spring Boot",
+      "items": [
+        "spring-constructor",
+        "design-order-api"
+      ],
+      "track": "Backend",
+      "order": 7
+    },
+    {
+      "id": "typescript-react",
+      "title": "TypeScript and React",
+      "items": [
+        "react-snapshot"
+      ],
+      "track": "TypeScript & React",
+      "order": 8
+    },
+    {
+      "id": "aws",
+      "title": "AWS",
+      "items": [
+        "iam-least-privilege"
+      ],
+      "track": "AWS",
+      "order": 9
+    },
+    {
+      "id": "security",
+      "title": "Security",
+      "items": [
+        "owasp-2025-first"
+      ],
+      "track": "Backend",
+      "order": 10
+    },
+    {
+      "id": "devops",
+      "title": "DevOps",
+      "items": [
+        "docker-image-vs-container"
+      ],
+      "track": "Backend",
+      "order": 11
+    }
   ]
 }

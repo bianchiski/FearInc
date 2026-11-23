@@ -109,5 +109,35 @@
     "reuse": "If this fails, revisit stack LIFO invariant and trace the reuse scenario case.",
     "many": "If this fails, revisit stack LIFO invariant and trace the growth boundary case.",
     "zero": "If this fails, revisit stack LIFO invariant and trace the zero value case."
-  }
+  },
+  "track": "Backend",
+  "tier": "beginner",
+  "tags": [
+    "data-structures",
+    "code-problem",
+    "beginner"
+  ],
+  "eli5": {
+    "analogy": "Think of Stack from an array as a small tool with one job.",
+    "definition": "Implement push and pop around the next-free index while preserving LIFO order.",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "Stack from an array",
+    "shortAnswer": "Implement push and pop around the next-free index while preserving LIFO order.",
+    "deepAnswer": "Implement push and pop around the next-free index while preserving LIFO order."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,6 +61,9 @@ public final class Main {
     server.createContext("/api/due", exchange -> api(exchange, Main::due));
     server.createContext("/api/mistake", exchange -> api(exchange, Main::mistake));
     server.createContext("/api/settings", exchange -> api(exchange, Main::settings));
+    server.createContext("/api/search", exchange -> api(exchange, Main::search));
+    server.createContext("/api/bookmarks", exchange -> api(exchange, Main::bookmarks));
+    server.createContext("/api/profile", exchange -> api(exchange, Main::profile));
     server.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
     return server;
   }
@@ -239,6 +243,30 @@ public final class Main {
     json(exchange, 200, Store.settings().toString());
   }
 
+  private static void search(HttpExchange exchange) throws IOException {
+    requireMethod(exchange, "GET");
+    String query = exchange.getRequestURI().getQuery();
+    String term = query == null ? "" : URLDecoder.decode(query.replaceFirst("^q=", ""),
+        StandardCharsets.UTF_8).toLowerCase();
+    JSONArray matches = new JSONArray();
+    for (Object value : publicCatalog().getJSONArray("items")) {
+      JSONObject item = (JSONObject) value;
+      String haystack = item.toString().toLowerCase();
+      if (term.isBlank() || haystack.contains(term)) matches.put(item);
+    }
+    json(exchange, 200, new JSONObject().put("items", matches).toString());
+  }
+
+  private static void bookmarks(HttpExchange exchange) throws IOException {
+    if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+      JSONObject request = body(exchange);
+      Store.bookmark(request.getString("item"), request.optBoolean("saved"));
+    } else {
+      requireMethod(exchange, "GET");
+    }
+    json(exchange, 200, new JSONObject().put("items", Store.bookmarks()).toString());
+  }
+
   private static void requireMethod(HttpExchange exchange, String method) throws IOException {
     if (method.equalsIgnoreCase(exchange.getRequestMethod())) return;
     exchange.getResponseHeaders().set("Allow", method);
@@ -297,6 +325,21 @@ public final class Main {
         .put("next", nextAction(aiDrills))
         .put("weakSpots", Store.mistakes())
         .put("settings", settings);
+  }
+
+  private static void profile(HttpExchange exchange) throws IOException {
+    if ("POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+      JSONObject request = body(exchange);
+      String tier = request.getString("tier");
+      if (!Set.of("beginner", "intermediate", "experienced").contains(tier)) {
+        throw new IllegalArgumentException("Invalid tier");
+      }
+      Store.saveProfile(tier, request.optJSONArray("tracks") == null
+          ? new JSONArray().put("Backend") : request.getJSONArray("tracks"));
+    } else {
+      requireMethod(exchange, "GET");
+    }
+    json(exchange, 200, Store.profile().toString());
   }
 
   private static Path root() {

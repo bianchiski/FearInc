@@ -67,5 +67,35 @@
   ],
   "theory": [
     "hash-map"
+  ],
+  "track": "Backend",
+  "tier": "beginner",
+  "tags": [
+    "foundations",
+    "code-problem",
+    "beginner"
+  ],
+  "eli5": {
+    "analogy": "Think of Pair indices as a small tool with one job.",
+    "definition": "Start simple: Return the indexes of two different values that add up to the target. If none exist, return [-1, -1]. The theory is optional. The C solution appears after the hidden tests pass.",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "Pair indices",
+    "shortAnswer": "Start simple: Return the indexes of two different values that add up to the target. If none exist, return [-1, -1]. The theory is optional. The C solution appears after the hidden tests pass.",
+    "deepAnswer": "Start simple: Return the indexes of two different values that add up to the target. If none exist, return [-1, -1]. The theory is optional. The C solution appears after the hidden tests pass."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
   ]
 }

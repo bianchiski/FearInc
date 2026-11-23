@@ -110,5 +110,35 @@
     "remove": "If this fails, revisit linked endpoints and traversal and trace the remove scenario case.",
     "remove-empty": "If this fails, revisit linked endpoints and traversal and trace the remove-empty scenario case.",
     "mixed": "If this fails, revisit linked endpoints and traversal and trace the mixed scenario case."
-  }
+  },
+  "track": "Backend",
+  "tier": "beginner",
+  "tags": [
+    "data-structures",
+    "code-problem",
+    "beginner"
+  ],
+  "eli5": {
+    "analogy": "Think of Singly linked list as a small tool with one job.",
+    "definition": "Maintain head, tail, and next-link invariants while inserting and removing nodes.",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "Singly linked list",
+    "shortAnswer": "Maintain head, tail, and next-link invariants while inserting and removing nodes.",
+    "deepAnswer": "Maintain head, tail, and next-link invariants while inserting and removing nodes."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }

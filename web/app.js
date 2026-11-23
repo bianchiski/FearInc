@@ -6,6 +6,8 @@ let catalog;
 let current;
 let thinkAt = 0;
 let retryReady = false;
+let view = 'dashboard';
+let bookmarks = new Set();
 const $ = id => document.getElementById(id);
 
 function node(tag, text, className) {
@@ -133,9 +135,80 @@ function renderSummary() {
       : 'No concept reviews are due.', 'muted'));
 }
 
+function renderHome() {
+  const summary = catalog.summary || {};
+  const backend = catalog.items.filter(entry => entry.track === 'Backend');
+  const mastered = new Set(catalog.mastered || []);
+  $('work').replaceChildren();
+  const hero = node('div', undefined, 'hero');
+  const copy = node('div');
+  copy.append(node('p', 'YOUR NEXT BEST STEP', 'eyebrow'));
+  copy.append(node('h2', 'Build interview confidence, one concept at a time.'));
+  copy.append(node('p', 'Start with the recommended session, then use ELI5 and interview mode to make the knowledge yours.', 'objective'));
+  hero.append(copy);
+  if (catalog.next?.item) addButton(hero, 'Continue learning', () => openItem(catalog.next.item, catalog.next.step));
+  $('work').append(hero);
+  const metrics = node('div', undefined, 'metric-grid');
+  [['Backend concepts', backend.length], ['Mastered', mastered.size], ['Day streak', summary.streakDays || 0]]
+    .forEach(([label, value]) => { const card = node('div', undefined, 'metric'); card.append(node('span', label, 'muted'), node('strong', String(value))); metrics.append(card); });
+  $('work').append(metrics);
+  const section = node('section', undefined, 'learning-card');
+  section.append(node('h3', 'Three tiers, one path'));
+  ['beginner', 'intermediate', 'experienced'].forEach(tier => {
+    const count = backend.filter(entry => entry.tier === tier).length;
+    const masteredTier = backend.filter(entry => entry.tier === tier && mastered.has(entry.id)).length;
+    const row = node('p', undefined, 'question-card');
+    row.append(node('span', tier, `badge ${tier}`), node('span', ` ${masteredTier}/${count} concepts complete`));
+    section.append(row);
+  });
+  $('work').append(section);
+  const mock = node('section', undefined, 'learning-card');
+  mock.append(node('h3', 'Fast interview check'));
+  mock.append(node('p', 'Pick a question and give yourself 60 seconds before revealing the answer.', 'muted'));
+  addButton(mock, 'Start mixed mock', () => {
+    const candidates = catalog.items.filter(item => item.interview);
+    const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+    openItem(chosen.id, 'recall');
+  });
+  $('work').append(mock);
+}
+
+function renderLibrary(kind, entries = catalog.items) {
+  $('work').replaceChildren();
+  $('work').append(node('p', kind === 'eli5' ? 'SIMPLE, ACCURATE EXPLANATIONS' : 'PRACTICE SAYING IT OUT LOUD', 'eyebrow'));
+  $('work').append(node('h2', kind === 'eli5' ? 'ELI5 library' : 'Interview questions'));
+  $('work').append(node('p', kind === 'eli5'
+    ? 'Start simple, then check the precise definition and the limits of the analogy.'
+    : 'Use the short answer first. Open the deep answer only after you have tried to explain it.', 'objective'));
+  entries.filter(item => item.interview).forEach(item => {
+    const card = node('article', undefined, 'question-card');
+    card.append(node('span', `${item.track} · ${item.tier}`, `badge ${item.tier}`));
+    card.append(node('h3', kind === 'eli5' ? item.title : item.interview.question));
+    card.append(node('p', kind === 'eli5' ? item.eli5.analogy : item.interview.shortAnswer));
+    const details = node('details');
+    details.append(node('summary', kind === 'eli5' ? 'See definition, example, and limits' : 'See deep answer, tips, and follow-ups'));
+    details.append(node('p', kind === 'eli5' ? item.eli5.definition : item.interview.deepAnswer));
+    details.append(node('p', kind === 'eli5' ? `Example: ${item.eli5.example}` : `Tips: ${item.tips.join(' ')}`, 'muted'));
+    details.append(node('p', kind === 'eli5' ? `Limits: ${item.eli5.limits}` : `Follow-ups: ${item.followUps.join(' ')}`, 'muted'));
+    card.append(details);
+    addButton(card, bookmarks.has(item.id) ? 'Saved' : 'Save', () => toggleBookmark(item.id, card), true);
+    addButton(card, 'Practice this', () => openItem(item.id), false);
+    $('work').append(card);
+  });
+}
+
+async function toggleBookmark(id, card) {
+  const saved = !bookmarks.has(id);
+  await api('/api/bookmarks', {method: 'POST', body: JSON.stringify({item: id, saved})});
+  if (saved) bookmarks.add(id); else bookmarks.delete(id);
+  renderLibrary(view);
+}
+
 async function load(selectId, selectedStep) {
   try {
     catalog = await api('/api/catalog');
+    const saved = await api('/api/bookmarks');
+    bookmarks = new Set(saved.items || []);
     $('ai').checked = !!catalog.settings.aiDrills;
     renderSession();
     renderPlanner();
@@ -145,7 +218,9 @@ async function load(selectId, selectedStep) {
 
     const fallback = catalog.items.find(item => item.type === 'code-problem') || catalog.items[0];
     const next = selectId || catalog.next?.item || fallback?.id;
-    if (next) openItem(next, selectedStep || catalog.next?.step || 'teach');
+    if (view === 'questions' || view === 'eli5') renderLibrary(view);
+    else if (view === 'dashboard') renderHome();
+    else if (next) openItem(next, selectedStep || catalog.next?.step || 'teach');
   } catch (error) {
     showError(error);
   }
@@ -414,6 +489,24 @@ $('ai').addEventListener('change', async event => {
   } catch (error) {
     showError(error);
   }
+});
+
+document.querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', () => {
+  view = button.dataset.view;
+  document.querySelectorAll('[data-view]').forEach(candidate => candidate.classList.toggle('active', candidate === button));
+  if (view === 'dashboard') renderHome();
+  if (view === 'questions' || view === 'eli5') renderLibrary(view);
+  if (view === 'progress') renderSummary();
+}));
+
+$('search').addEventListener('input', event => {
+  const term = event.target.value.trim().toLowerCase();
+  if (!term) return view === 'questions' || view === 'eli5' ? renderLibrary(view) : undefined;
+  const results = catalog.items.filter(item => item.title.toLowerCase().includes(term)
+      || item.track.toLowerCase().includes(term)
+      || JSON.stringify(item.interview || {}).toLowerCase().includes(term)
+      || JSON.stringify(item.eli5 || {}).toLowerCase().includes(term));
+  renderLibrary(view === 'eli5' ? 'eli5' : 'questions', results);
 });
 
 load();

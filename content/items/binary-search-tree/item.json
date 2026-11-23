@@ -110,5 +110,35 @@
     "empty": "If this fails, revisit tree ordering and recursion and trace the empty structure case.",
     "left-chain": "If this fails, revisit tree ordering and recursion and trace the left-chain scenario case.",
     "mixed": "If this fails, revisit tree ordering and recursion and trace the mixed scenario case."
-  }
+  },
+  "track": "Backend",
+  "tier": "beginner",
+  "tags": [
+    "data-structures",
+    "code-problem",
+    "beginner"
+  ],
+  "eli5": {
+    "analogy": "Think of Binary search tree as a small tool with one job.",
+    "definition": "Preserve the left-smaller/right-larger invariant while inserting and searching a tree.",
+    "example": "Use this idea on a small example before scaling it up.",
+    "limits": "The analogy is a guide, not a substitute for the exact rules and edge cases."
+  },
+  "interview": {
+    "question": "Binary search tree",
+    "shortAnswer": "Preserve the left-smaller/right-larger invariant while inserting and searching a tree.",
+    "deepAnswer": "Preserve the left-smaller/right-larger invariant while inserting and searching a tree."
+  },
+  "tips": [
+    "State the invariant or trade-off before coding.",
+    "Name one edge case and one way to verify the answer."
+  ],
+  "commonMistakes": [
+    "Jumping to implementation before clarifying the constraint.",
+    "Giving a memorized answer without an example."
+  ],
+  "followUps": [
+    "What changes at larger scale?",
+    "How would you test this in production?"
+  ]
 }
