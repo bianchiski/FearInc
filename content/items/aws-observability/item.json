@@ -1,0 +1,63 @@
+{
+  "id": "aws-observability",
+  "type": "drill",
+  "title": "CloudWatch, X-Ray, and OpenTelemetry with Spring",
+  "prompt": "How do you trace a request across Spring services and AWS dependencies?",
+  "answer": "Propagate trace context through HTTP and messages, export via OpenTelemetry or the AWS collector, and correlate logs with trace IDs and metrics.",
+  "explanation": "Propagate trace context through HTTP and messages, export via OpenTelemetry or the AWS collector, and correlate logs with trace IDs and metrics.",
+  "sources": [
+    "https://docs.awspring.io/spring-cloud-aws/docs/current/reference/html/index.html",
+    "https://docs.aws.amazon.com/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "least-privilege"
+  ],
+  "track": "AWS",
+  "tier": "experienced",
+  "tags": [
+    "aws",
+    "spring-boot",
+    "integration"
+  ],
+  "eli5": {
+    "analogy": "A trace is a shipment tracking number across every hand-off.",
+    "definition": "Propagate trace context through HTTP and messages, export via OpenTelemetry or the AWS collector, and correlate logs with trace IDs and metrics.",
+    "example": "Walk one request or message through the AWS service and name where identity, retries, and failure are handled.",
+    "limits": "Sampling hides rare failures and message hops can drop context unless propagated."
+  },
+  "interview": {
+    "question": "How do you trace a request across Spring services and AWS dependencies?",
+    "shortAnswer": "Propagate trace context through HTTP and messages, export via OpenTelemetry or the AWS collector, and correlate logs with trace IDs and metrics.",
+    "deepAnswer": "Propagate trace context through HTTP and messages, export via OpenTelemetry or the AWS collector, and correlate logs with trace IDs and metrics. Tie it to IAM scope, failure behavior, and the evidence you would check in production."
+  },
+  "tips": [
+    "Name the identity, the failure mode, and the retry behavior.",
+    "Mention least-privilege IAM for the exact resource."
+  ],
+  "commonMistakes": [
+    "Emitting unstructured logs with no correlation ID.",
+    "Alerting on averages instead of tail latency and saturation."
+  ],
+  "followUps": [
+    "How would you find the slow hop in an SQS-driven flow?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25 with Spring Cloud AWS 4.x",
+  "compatibility": "Spring Cloud AWS versions track Spring Boot generations; for Boot 3.x use the 3.x line and verify property prefixes and starters.",
+  "scenario": {
+    "symptom": "How do you trace a request across Spring services and AWS dependencies?",
+    "evidence": [
+      "Application and SDK logs",
+      "Service metrics such as queue depth, connections, or latency",
+      "IAM and configuration for the affected resource"
+    ],
+    "hypotheses": [
+      "Misconfigured identity or permissions",
+      "Retry, timeout, or acknowledgement misconfiguration",
+      "Stale connection, context loss, or capacity limit"
+    ],
+    "diagnosis": "Propagate trace context through HTTP and messages, export via OpenTelemetry or the AWS collector, and correlate logs with trace IDs and metrics.",
+    "fix": "Correct the configuration, add idempotency or validation, and add a monitored signal for the failure.",
+    "verification": "Reproduce the failure in a test or game day and confirm the new behavior and alarms."
+  }
+}

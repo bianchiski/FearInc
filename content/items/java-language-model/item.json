@@ -1,0 +1,51 @@
+{
+  "id": "java-language-model",
+  "type": "quiz",
+  "title": "Modern Java type modeling",
+  "prompt": "When are records and sealed types useful in backend design?",
+  "choices": [
+    "Records express transparent data carriers and sealed types constrain a known domain hierarchy, improving validation and exhaustive handling.",
+    "The JVM guarantees it for every object"
+  ],
+  "answer": "Records express transparent data carriers and sealed types constrain a known domain hierarchy, improving validation and exhaustive handling.",
+  "explanation": "Records express transparent data carriers and sealed types constrain a known domain hierarchy, improving validation and exhaustive handling.",
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "hash-map"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "java-25",
+    "deep-dive",
+    "experienced"
+  ],
+  "eli5": {
+    "analogy": "A record is a labeled package; a sealed type is a controlled set of package shapes.",
+    "definition": "Records express transparent data carriers and sealed types constrain a known domain hierarchy, improving validation and exhaustive handling.",
+    "example": "State the invariant, then choose the smallest mechanism that preserves it.",
+    "limits": "They do not remove the need to validate external input."
+  },
+  "interview": {
+    "question": "When are records and sealed types useful in backend design?",
+    "shortAnswer": "Records express transparent data carriers and sealed types constrain a known domain hierarchy, improving validation and exhaustive handling.",
+    "deepAnswer": "Records express transparent data carriers and sealed types constrain a known domain hierarchy, improving validation and exhaustive handling. Include one failure mode and the evidence you would use to validate the design."
+  },
+  "tips": [
+    "Name the invariant before naming the API.",
+    "Discuss cancellation, contention, or mutability where relevant."
+  ],
+  "commonMistakes": [
+    "Confusing a convenient API with a correctness guarantee.",
+    "Ignoring lifecycle and failure behavior."
+  ],
+  "followUps": [
+    "How would you test the race or contract?",
+    "What changes under higher contention?"
+  ],
+  "bootBaseline": "Java 25",
+  "compatibility": "For Java 21, verify feature availability and preview status before using newer language or concurrency APIs."
+}

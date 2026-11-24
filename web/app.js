@@ -77,6 +77,70 @@ function renderSession() {
   addButton(target, `Continue: ${next.title}`, () => openItem(next.item, next.step), false, 'session-primary');
 }
 
+async function renderAssessment() {
+  const target = $('assessment');
+  target.replaceChildren();
+  try {
+    const state = await api('/api/assessment');
+    if (state.status === 'unavailable') {
+      target.append(node('span', 'No assessment is ready yet.', 'muted'));
+      return;
+    }
+    if (state.status === 'ready') {
+      target.append(node('p', 'Test one concept in three different ways.', 'muted'));
+      addButton(target, 'Start mixed check', async () => {
+        const started = await api('/api/assessment', {
+          method: 'POST', body: JSON.stringify({action: 'start'})
+        });
+        await renderAssessmentState(started);
+      }, false, 'session-primary');
+      return;
+    }
+    await renderAssessmentState(state);
+  } catch (error) {
+    target.append(node('span', error.message, 'bad'));
+  }
+}
+
+async function renderAssessmentState(state) {
+  const target = $('assessment');
+  target.replaceChildren();
+  if (state.status === 'complete') {
+    target.append(node('p', `Result: ${state.result || state.outcomes?.result || 'complete'}`, 'ok'));
+    return;
+  }
+  const position = state.position || 0;
+  const ids = state.items || [];
+  target.append(node('p', `${state.concept} · ${position}/${ids.length}`, 'muted'));
+  if (position >= ids.length) {
+    addButton(target, 'Finish assessment', async () => {
+      const complete = await api('/api/assessment', {
+        method: 'POST', body: JSON.stringify({action: 'complete'})
+      });
+      await renderAssessmentState(complete);
+    }, false, 'session-primary');
+    return;
+  }
+  addButton(target, `Continue: ${item(ids[position])?.title || ids[position]}`,
+      () => openAssessmentItem(state, position), false, 'session-primary');
+}
+
+function openAssessmentItem(state, position) {
+  const id = state.items[position];
+  openItem(id);
+  const original = $('status');
+  const button = node('button', 'Record and continue', 'session-primary');
+  button.addEventListener('click', async () => {
+    const result = $('result')?.className === 'ok' ? 'pass' : 'developing';
+    const updated = await api('/api/assessment', {
+      method: 'POST',
+      body: JSON.stringify({action: 'record', position, outcome: result})
+    });
+    await renderAssessmentState(updated);
+  });
+  original?.parentElement?.append(button);
+}
+
 function renderPlanner() {
   const planner = $('planner');
   planner.replaceChildren();
@@ -211,6 +275,7 @@ async function load(selectId, selectedStep) {
     bookmarks = new Set(saved.items || []);
     $('ai').checked = !!catalog.settings.aiDrills;
     renderSession();
+    await renderAssessment();
     renderPlanner();
     renderDue();
     renderModules();
@@ -285,6 +350,27 @@ function openItem(id, sessionStep = 'teach') {
         'muted'));
   }
   work.append(node('p', current.statement || current.body || current.prompt || ''));
+  if (current.bootBaseline || current.compatibility) {
+    const compatibility = node('details', undefined, 'learning-card');
+    compatibility.append(node('summary', 'Version notes'));
+    if (current.bootBaseline) compatibility.append(node('p', `Primary baseline: ${current.bootBaseline}`));
+    if (current.compatibility) compatibility.append(node('p', current.compatibility, 'muted'));
+    work.append(compatibility);
+  }
+  if (current.scenario) {
+    const scenario = node('details', undefined, 'learning-card');
+    scenario.open = true;
+    scenario.append(node('summary', 'Diagnostic scenario'));
+    scenario.append(node('p', `Symptom: ${current.scenario.symptom}`));
+    scenario.append(node('p', `Evidence to collect: ${current.scenario.evidence.join(' ')}`, 'muted'));
+    scenario.append(node('p', `Competing hypotheses: ${current.scenario.hypotheses.join(' ')}`, 'muted'));
+    addButton(scenario, 'Reveal diagnosis', () => {
+      scenario.append(node('p', `Diagnosis: ${current.scenario.diagnosis}`));
+      scenario.append(node('p', `Fix: ${current.scenario.fix}`));
+      scenario.append(node('p', `Verify: ${current.scenario.verification}`));
+    }, true);
+    work.append(scenario);
+  }
 
   if (current.workedExample) {
     const example = node('details', undefined, 'learning-card');

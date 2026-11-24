@@ -1,0 +1,50 @@
+{
+  "id": "boot-production-ops",
+  "type": "quiz",
+  "title": "Spring Boot production operations",
+  "prompt": "What should you inspect first when a Boot service is unhealthy?",
+  "choices": [
+    "Check health indicators, metrics, logs, traces, saturation signals, and recent deployment/configuration changes.",
+    "It is guaranteed by the Java compiler"
+  ],
+  "answer": "Check health indicators, metrics, logs, traces, saturation signals, and recent deployment/configuration changes.",
+  "explanation": "Check health indicators, metrics, logs, traces, saturation signals, and recent deployment/configuration changes.",
+  "sources": [
+    "https://docs.spring.io/spring-boot/reference/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "dependency-injection"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "spring-boot",
+    "experienced",
+    "production"
+  ],
+  "eli5": {
+    "analogy": "Operations is a dashboard with several warning lights.",
+    "definition": "Check health indicators, metrics, logs, traces, saturation signals, and recent deployment/configuration changes.",
+    "example": "Apply the idea to one request, one transaction, or one deployment change.",
+    "limits": "A green liveness signal does not prove dependency readiness."
+  },
+  "interview": {
+    "question": "What should you inspect first when a Boot service is unhealthy?",
+    "shortAnswer": "Check health indicators, metrics, logs, traces, saturation signals, and recent deployment/configuration changes.",
+    "deepAnswer": "Check health indicators, metrics, logs, traces, saturation signals, and recent deployment/configuration changes. In an interview, connect it to evidence and one failure mode."
+  },
+  "tips": [
+    "Lead with the production invariant.",
+    "Name the boundary and the evidence you would inspect."
+  ],
+  "commonMistakes": [
+    "Correlate symptoms with a time window.",
+    "Treating one metric as the diagnosis."
+  ],
+  "followUps": [
+    "How do you prove graceful shutdown worked?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25",
+  "compatibility": "For Spring Boot 3 and Java 21, verify the corresponding reference documentation and serialization/runtime defaults."
+}

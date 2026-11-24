@@ -1,0 +1,50 @@
+{
+  "id": "boot-startup",
+  "type": "quiz",
+  "title": "Spring Boot startup and auto-configuration",
+  "prompt": "How do you diagnose why a Spring Boot bean was or was not auto-configured?",
+  "choices": [
+    "Use the condition evaluation report and inspect conditional auto-configuration decisions.",
+    "It is guaranteed by the Java compiler"
+  ],
+  "answer": "Use the condition evaluation report and inspect conditional auto-configuration decisions.",
+  "explanation": "Use the condition evaluation report and inspect conditional auto-configuration decisions.",
+  "sources": [
+    "https://docs.spring.io/spring-boot/reference/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "dependency-injection"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "spring-boot",
+    "experienced",
+    "production"
+  ],
+  "eli5": {
+    "analogy": "A starter is a labeled toolbox: adding it lets Boot offer matching defaults.",
+    "definition": "Use the condition evaluation report and inspect conditional auto-configuration decisions.",
+    "example": "Apply the idea to one request, one transaction, or one deployment change.",
+    "limits": "Auto-configuration is conditional configuration, not magic; it backs off when you provide a compatible bean."
+  },
+  "interview": {
+    "question": "How do you diagnose why a Spring Boot bean was or was not auto-configured?",
+    "shortAnswer": "Use the condition evaluation report and inspect conditional auto-configuration decisions.",
+    "deepAnswer": "Use the condition evaluation report and inspect conditional auto-configuration decisions. In an interview, connect it to evidence and one failure mode."
+  },
+  "tips": [
+    "Lead with the production invariant.",
+    "Name the boundary and the evidence you would inspect."
+  ],
+  "commonMistakes": [
+    "Start with the report before changing annotations.",
+    "Assuming a starter guarantees a bean exists."
+  ],
+  "followUps": [
+    "What evidence would you collect in production?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25",
+  "compatibility": "For Spring Boot 3 and Java 21, verify the corresponding reference documentation and serialization/runtime defaults."
+}

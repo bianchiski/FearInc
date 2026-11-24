@@ -7,6 +7,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Set;
 
 import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
@@ -143,6 +144,43 @@ class LearningLoopHttpTest {
         new JSONObject().put("tier", "intermediate")
             .put("tracks", new org.json.JSONArray().put("Backend"))).body());
     assertEquals("intermediate", profile.getString("tier"));
+  }
+
+  @Test
+  void deepBackendPathExposesVersionNotesAndScenarios() throws Exception {
+    JSONObject catalog = new JSONObject(get("/api/catalog").body());
+    boolean sawSpring = false;
+    boolean sawScenario = false;
+    for (Object value : catalog.getJSONArray("items")) {
+      JSONObject item = (JSONObject) value;
+      if ("boot-startup".equals(item.getString("id"))) {
+        sawSpring = "experienced".equals(item.getString("tier"))
+            && item.getString("bootBaseline").contains("Spring Boot 4");
+      }
+      if (item.has("scenario")) {
+        sawScenario = item.getJSONObject("scenario").has("evidence")
+            && item.getJSONObject("scenario").has("verification");
+      }
+    }
+    assertTrue(sawSpring);
+    assertTrue(sawScenario);
+  }
+
+  @Test
+  void mixedAssessmentStartsAndResumes() throws Exception {
+    JSONObject ready = new JSONObject(get("/api/assessment").body());
+    assertTrue(Set.of("ready", "active", "complete").contains(ready.getString("status")));
+    JSONObject started = new JSONObject(post("/api/assessment",
+        new JSONObject().put("action", "start")).body());
+    assertTrue(started.getJSONArray("items").length() >= 1);
+    JSONObject resumed = new JSONObject(get("/api/assessment").body());
+    assertEquals(started.getString("id"), resumed.getString("id"));
+    if (started.getJSONArray("items").length() > 1) {
+      JSONObject next = new JSONObject(post("/api/assessment",
+          new JSONObject().put("action", "record").put("position", 0)
+              .put("outcome", "pass")).body());
+      assertEquals(1, next.getInt("position"));
+    }
   }
 
   private HttpResponse<String> get(String path) throws Exception {

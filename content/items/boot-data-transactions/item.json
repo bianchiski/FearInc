@@ -1,0 +1,50 @@
+{
+  "id": "boot-data-transactions",
+  "type": "quiz",
+  "title": "Spring transactions in production",
+  "prompt": "What does @Transactional actually guarantee?",
+  "choices": [
+    "It defines a proxy-bound transaction boundary; propagation, isolation, rollback rules, and resource participation still matter.",
+    "It is guaranteed by the Java compiler"
+  ],
+  "answer": "It defines a proxy-bound transaction boundary; propagation, isolation, rollback rules, and resource participation still matter.",
+  "explanation": "It defines a proxy-bound transaction boundary; propagation, isolation, rollback rules, and resource participation still matter.",
+  "sources": [
+    "https://docs.spring.io/spring-boot/reference/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "dependency-injection"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "spring-boot",
+    "experienced",
+    "production"
+  ],
+  "eli5": {
+    "analogy": "A transaction is a checkout lane that groups database work.",
+    "definition": "It defines a proxy-bound transaction boundary; propagation, isolation, rollback rules, and resource participation still matter.",
+    "example": "Apply the idea to one request, one transaction, or one deployment change.",
+    "limits": "It does not make remote calls atomic or fix self-invocation."
+  },
+  "interview": {
+    "question": "What does @Transactional actually guarantee?",
+    "shortAnswer": "It defines a proxy-bound transaction boundary; propagation, isolation, rollback rules, and resource participation still matter.",
+    "deepAnswer": "It defines a proxy-bound transaction boundary; propagation, isolation, rollback rules, and resource participation still matter. In an interview, connect it to evidence and one failure mode."
+  },
+  "tips": [
+    "Lead with the production invariant.",
+    "Name the boundary and the evidence you would inspect."
+  ],
+  "commonMistakes": [
+    "Keep boundaries short and explicit.",
+    "Assuming every method call starts a transaction."
+  ],
+  "followUps": [
+    "What happens when a checked exception escapes?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25",
+  "compatibility": "For Spring Boot 3 and Java 21, verify the corresponding reference documentation and serialization/runtime defaults."
+}

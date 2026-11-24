@@ -1,0 +1,50 @@
+{
+  "id": "boot-security",
+  "type": "quiz",
+  "title": "Spring Security request boundaries",
+  "prompt": "How do you reason about Spring Security without relying on memorized annotations?",
+  "choices": [
+    "Trace the filter chain, authentication, authorization, CSRF/CORS boundaries, and the resource being protected.",
+    "It is guaranteed by the Java compiler"
+  ],
+  "answer": "Trace the filter chain, authentication, authorization, CSRF/CORS boundaries, and the resource being protected.",
+  "explanation": "Trace the filter chain, authentication, authorization, CSRF/CORS boundaries, and the resource being protected.",
+  "sources": [
+    "https://docs.spring.io/spring-boot/reference/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "dependency-injection"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "spring-boot",
+    "experienced",
+    "production"
+  ],
+  "eli5": {
+    "analogy": "Security is a sequence of guards at a building entrance.",
+    "definition": "Trace the filter chain, authentication, authorization, CSRF/CORS boundaries, and the resource being protected.",
+    "example": "Apply the idea to one request, one transaction, or one deployment change.",
+    "limits": "A guard can authenticate identity without granting every room."
+  },
+  "interview": {
+    "question": "How do you reason about Spring Security without relying on memorized annotations?",
+    "shortAnswer": "Trace the filter chain, authentication, authorization, CSRF/CORS boundaries, and the resource being protected.",
+    "deepAnswer": "Trace the filter chain, authentication, authorization, CSRF/CORS boundaries, and the resource being protected. In an interview, connect it to evidence and one failure mode."
+  },
+  "tips": [
+    "Lead with the production invariant.",
+    "Name the boundary and the evidence you would inspect."
+  ],
+  "commonMistakes": [
+    "Name the threat boundary before the configuration.",
+    "Confusing CORS with authorization."
+  ],
+  "followUps": [
+    "Which evidence shows an endpoint is protected?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25",
+  "compatibility": "For Spring Boot 3 and Java 21, verify the corresponding reference documentation and serialization/runtime defaults."
+}

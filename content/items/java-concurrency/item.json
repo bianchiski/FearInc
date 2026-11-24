@@ -1,0 +1,51 @@
+{
+  "id": "java-concurrency",
+  "type": "quiz",
+  "title": "Java concurrency design",
+  "prompt": "How do you prevent a shared counter from silently losing updates?",
+  "choices": [
+    "Choose synchronization or atomic operations based on the invariant, contention, and composition required.",
+    "The JVM guarantees it for every object"
+  ],
+  "answer": "Choose synchronization or atomic operations based on the invariant, contention, and composition required.",
+  "explanation": "Choose synchronization or atomic operations based on the invariant, contention, and composition required.",
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "hash-map"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "java-25",
+    "deep-dive",
+    "experienced"
+  ],
+  "eli5": {
+    "analogy": "Many people editing one whiteboard need a rule for each edit.",
+    "definition": "Choose synchronization or atomic operations based on the invariant, contention, and composition required.",
+    "example": "State the invariant, then choose the smallest mechanism that preserves it.",
+    "limits": "Atomic counters do not automatically make a multi-step transaction safe."
+  },
+  "interview": {
+    "question": "How do you prevent a shared counter from silently losing updates?",
+    "shortAnswer": "Choose synchronization or atomic operations based on the invariant, contention, and composition required.",
+    "deepAnswer": "Choose synchronization or atomic operations based on the invariant, contention, and composition required. Include one failure mode and the evidence you would use to validate the design."
+  },
+  "tips": [
+    "Name the invariant before naming the API.",
+    "Discuss cancellation, contention, or mutability where relevant."
+  ],
+  "commonMistakes": [
+    "Confusing a convenient API with a correctness guarantee.",
+    "Ignoring lifecycle and failure behavior."
+  ],
+  "followUps": [
+    "How would you test the race or contract?",
+    "What changes under higher contention?"
+  ],
+  "bootBaseline": "Java 25",
+  "compatibility": "For Java 21, verify feature availability and preview status before using newer language or concurrency APIs."
+}

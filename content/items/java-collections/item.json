@@ -1,0 +1,51 @@
+{
+  "id": "java-collections",
+  "type": "quiz",
+  "title": "Java collections contracts",
+  "prompt": "Why must equals and hashCode agree?",
+  "choices": [
+    "Hash-based collections use the hash to find a region and equality to confirm identity; unequal hashes for equal objects break lookup.",
+    "The JVM guarantees it for every object"
+  ],
+  "answer": "Hash-based collections use the hash to find a region and equality to confirm identity; unequal hashes for equal objects break lookup.",
+  "explanation": "Hash-based collections use the hash to find a region and equality to confirm identity; unequal hashes for equal objects break lookup.",
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "hash-map"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "java-25",
+    "deep-dive",
+    "experienced"
+  ],
+  "eli5": {
+    "analogy": "The hash picks a drawer and equality checks the label.",
+    "definition": "Hash-based collections use the hash to find a region and equality to confirm identity; unequal hashes for equal objects break lookup.",
+    "example": "State the invariant, then choose the smallest mechanism that preserves it.",
+    "limits": "Mutable keys can become unreachable after insertion."
+  },
+  "interview": {
+    "question": "Why must equals and hashCode agree?",
+    "shortAnswer": "Hash-based collections use the hash to find a region and equality to confirm identity; unequal hashes for equal objects break lookup.",
+    "deepAnswer": "Hash-based collections use the hash to find a region and equality to confirm identity; unequal hashes for equal objects break lookup. Include one failure mode and the evidence you would use to validate the design."
+  },
+  "tips": [
+    "Name the invariant before naming the API.",
+    "Discuss cancellation, contention, or mutability where relevant."
+  ],
+  "commonMistakes": [
+    "Confusing a convenient API with a correctness guarantee.",
+    "Ignoring lifecycle and failure behavior."
+  ],
+  "followUps": [
+    "How would you test the race or contract?",
+    "What changes under higher contention?"
+  ],
+  "bootBaseline": "Java 25",
+  "compatibility": "For Java 21, verify feature availability and preview status before using newer language or concurrency APIs."
+}

@@ -1,0 +1,64 @@
+{
+  "id": "jvm-memory",
+  "type": "drill",
+  "title": "JVM memory areas",
+  "prompt": "How do you distinguish heap, metaspace, direct memory, and thread-stack failures?",
+  "answer": "Use the error signature and runtime evidence to identify which memory area is exhausted before changing limits.",
+  "explanation": "Use the error signature and runtime evidence to identify which memory area is exhausted before changing limits.",
+  "sources": [
+    "https://docs.oracle.com/en/java/javase/25/",
+    "https://docs.spring.io/spring-boot/reference/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "docker"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "jvm",
+    "diagnostics",
+    "production"
+  ],
+  "eli5": {
+    "analogy": "A process has different rooms with different capacity rules.",
+    "definition": "Use the error signature and runtime evidence to identify which memory area is exhausted before changing limits.",
+    "example": "Capture a baseline, reproduce or observe the symptom, then compare the evidence after the change.",
+    "limits": "Increasing heap can hide a native or direct-memory problem."
+  },
+  "interview": {
+    "question": "How do you distinguish heap, metaspace, direct memory, and thread-stack failures?",
+    "shortAnswer": "Use the error signature and runtime evidence to identify which memory area is exhausted before changing limits.",
+    "deepAnswer": "Use the error signature and runtime evidence to identify which memory area is exhausted before changing limits. Avoid tuning by folklore; state what measurement supports the next action."
+  },
+  "tips": [
+    "Name the saturated resource.",
+    "Preserve evidence before restarting when safe."
+  ],
+  "commonMistakes": [
+    "Changing memory flags before identifying the failing area.",
+    "Collecting only application logs."
+  ],
+  "followUps": [
+    "Which tool would you use first?",
+    "How would you confirm the fix did not move the bottleneck?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25",
+  "compatibility": "For Boot 3 and Java 21, use the equivalent runtime and framework documentation.",
+  "scenario": {
+    "symptom": "How do you distinguish heap, metaspace, direct memory, and thread-stack failures?",
+    "evidence": [
+      "Metrics and traces",
+      "Thread or heap evidence",
+      "GC/JFR or pool telemetry"
+    ],
+    "hypotheses": [
+      "Application contention",
+      "Runtime memory pressure",
+      "External dependency or pool saturation"
+    ],
+    "diagnosis": "Use the error signature and runtime evidence to identify which memory area is exhausted before changing limits.",
+    "fix": "Change one variable at a time and add a regression signal.",
+    "verification": "Compare the same workload and confirm latency, errors, and saturation improve."
+  }
+}

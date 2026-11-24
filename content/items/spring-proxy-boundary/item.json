@@ -1,0 +1,63 @@
+{
+  "id": "spring-proxy-boundary",
+  "type": "drill",
+  "title": "Spring proxy boundaries",
+  "prompt": "Production symptom: Why does self-invocation bypass @Transactional or @Async?",
+  "answer": "The call stays inside the target object and does not pass through the proxy that applies the interceptor.",
+  "explanation": "The call stays inside the target object and does not pass through the proxy that applies the interceptor.",
+  "sources": [
+    "https://docs.spring.io/spring-framework/reference/core.html"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "dependency-injection"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "spring-internals",
+    "diagnostics",
+    "experienced"
+  ],
+  "eli5": {
+    "analogy": "A proxy is a receptionist; calling yourself skips the receptionist.",
+    "definition": "The call stays inside the target object and does not pass through the proxy that applies the interceptor.",
+    "example": "Write the boundary down, then identify the component that applies the behavior.",
+    "limits": "Different proxy types and final methods impose additional limits."
+  },
+  "interview": {
+    "question": "Why does self-invocation bypass @Transactional or @Async?",
+    "shortAnswer": "The call stays inside the target object and does not pass through the proxy that applies the interceptor.",
+    "deepAnswer": "The call stays inside the target object and does not pass through the proxy that applies the interceptor. Diagnose it by identifying whether the call crossed the relevant framework boundary."
+  },
+  "tips": [
+    "Separate symptom, mechanism, and fix.",
+    "Name one observation that would falsify your hypothesis."
+  ],
+  "commonMistakes": [
+    "Blaming annotations without checking proxies or conditions.",
+    "Assuming thread movement preserves every context."
+  ],
+  "followUps": [
+    "How would you verify the repair?",
+    "What changes under a different proxy or executor?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25",
+  "compatibility": "The same concepts apply to Boot 3 and Java 21, but verify package names and defaults against the target release.",
+  "scenario": {
+    "symptom": "Why does self-invocation bypass @Transactional or @Async?",
+    "evidence": [
+      "Application logs and startup report",
+      "Relevant endpoint or bean behavior",
+      "Recent configuration or deployment change"
+    ],
+    "hypotheses": [
+      "Incorrect condition or missing dependency",
+      "Proxy or lifecycle boundary",
+      "Context not propagated across an executor"
+    ],
+    "diagnosis": "The call stays inside the target object and does not pass through the proxy that applies the interceptor.",
+    "fix": "Make the boundary explicit, add focused observability, and verify with a regression test.",
+    "verification": "Reproduce the original symptom, run the focused test, and confirm the production signal changes."
+  }
+}

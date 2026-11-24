@@ -10,7 +10,10 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -64,6 +67,7 @@ public final class Main {
     server.createContext("/api/search", exchange -> api(exchange, Main::search));
     server.createContext("/api/bookmarks", exchange -> api(exchange, Main::bookmarks));
     server.createContext("/api/profile", exchange -> api(exchange, Main::profile));
+    server.createContext("/api/assessment", exchange -> api(exchange, Main::assessment));
     server.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
     return server;
   }
@@ -342,6 +346,96 @@ public final class Main {
     json(exchange, 200, Store.profile().toString());
   }
 
+  private static void assessment(HttpExchange exchange) throws IOException {
+    if ("GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+      JSONObject state = Store.assessment();
+      if ("none".equals(state.optString("status"))) {
+        state = new JSONObject().put("status", "ready").put("plan", assessmentPlan());
+      }
+      json(exchange, 200, state.toString());
+      return;
+    }
+    requireMethod(exchange, "POST");
+    JSONObject request = body(exchange);
+    String action = request.optString("action", "start");
+    if ("start".equals(action)) {
+      JSONObject plan = assessmentPlan();
+      if (plan.getJSONArray("items").isEmpty()) {
+        json(exchange, 200, new JSONObject().put("status", "unavailable").toString());
+        return;
+      }
+      json(exchange, 200, Store.startAssessment(
+          plan.getString("concept"), plan.getJSONArray("items")).toString());
+      return;
+    }
+    JSONObject state = Store.assessment();
+    if (!"active".equals(state.optString("status"))) {
+      throw new IllegalArgumentException("No active assessment");
+    }
+    if ("record".equals(action)) {
+      int position = request.getInt("position");
+      JSONObject outcomes = state.getJSONObject("outcomes");
+      outcomes.put(String.valueOf(position), request.getString("outcome"));
+      json(exchange, 200, Store.saveAssessment(
+          state.getString("id"), state.getString("concept"), state.getJSONArray("items"),
+          Math.min(position + 1, state.getJSONArray("items").length()), outcomes, "active").toString());
+      return;
+    }
+    if ("complete".equals(action)) {
+      JSONObject outcomes = state.getJSONObject("outcomes");
+      String result = assessmentResult(outcomes, state.getJSONArray("items").length());
+      json(exchange, 200, Store.saveAssessment(
+          state.getString("id"), state.getString("concept"), state.getJSONArray("items"),
+          state.getInt("position"), outcomes.put("result", result), "complete")
+          .put("result", result).toString());
+      return;
+    }
+    throw new IllegalArgumentException("Unknown assessment action");
+  }
+
+  private static JSONObject assessmentPlan() {
+    Set<String> weak = new HashSet<>();
+    for (Object value : Store.mistakes()) weak.add(((JSONObject) value).getString("mistake"));
+    List<JSONObject> candidates = new ArrayList<>();
+    for (Object value : catalog.getJSONArray("items")) {
+      JSONObject item = (JSONObject) value;
+      if (!visible(item, Store.settings().optBoolean("aiDrills", false))
+          || "lesson".equals(item.getString("type"))) continue;
+      candidates.add(item);
+    }
+    candidates.sort(Comparator.comparing((JSONObject item) ->
+        Store.due().toString().contains(item.getString("id")) ? 0 : 1)
+        .thenComparing(item -> weak.isEmpty() ? 1 : 0));
+    if (candidates.isEmpty()) return new JSONObject().put("concept", "").put("items", new JSONArray());
+    JSONObject anchor = candidates.get(0);
+    String concept = anchor.optString("concept", anchor.getString("id"));
+    JSONArray selected = new JSONArray();
+    for (JSONObject item : candidates) {
+      if (!concept.equals(item.optString("concept", item.getString("id")))) continue;
+      String type = item.getString("type");
+      boolean wanted = selected.isEmpty() ? ("quiz".equals(type) || "drill".equals(type))
+          : selected.length() == 1
+              ? ("code-problem".equals(type) || "scenario".equals(type))
+              : "explain".equals(type);
+      if (wanted) selected.put(item.getString("id"));
+      if (selected.length() == 3) break;
+    }
+    if (selected.length() == 0) selected.put(anchor.getString("id"));
+    return new JSONObject().put("concept", concept).put("items", selected);
+  }
+
+  private static String assessmentResult(JSONObject outcomes, int total) {
+    int score = 0;
+    for (String key : outcomes.keySet()) {
+      String outcome = outcomes.optString(key);
+      if ("pass".equals(outcome) || "strong".equals(outcome)) score += 2;
+      else if ("developing".equals(outcome)) score++;
+    }
+    if (score >= total * 2) return "strong";
+    if (score > 0) return "developing";
+    return "revisit";
+  }
+
   private static Path root() {
     Path configured = Path.of(System.getProperty("trainer.root", ".")).toAbsolutePath().normalize();
     if (Files.isDirectory(configured.resolve("content"))) return configured;
@@ -455,7 +549,8 @@ public final class Main {
   }
 
   private static JSONObject action(JSONObject item, String step, String kind, String reason) {
-    int minutes = "code-problem".equals(item.getString("type")) ? 20 : 10;
+    int minutes = "code-problem".equals(item.getString("type")) ? 20
+        : "scenario".equals(item.getString("type")) ? 15 : 10;
     return new JSONObject()
         .put("kind", kind)
         .put("item", item.getString("id"))

@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -63,5 +64,16 @@ class StoreTest {
         .anyMatch(value -> value.contains("stack LIFO invariant")));
     assertTrue(Store.learningSummary().getInt("conceptsMastered") >= 2);
     assertTrue(Store.learningSummary().getInt("streakDays") >= 1);
+  }
+
+  @Test
+  void activeAssessmentPersistsAndCanBeResumed() {
+    JSONArray items = new JSONArray().put("hashmap-shape").put("explain-pair-indices");
+    JSONObject started = Store.startAssessment("hashmap", items);
+    assertEquals("active", started.getString("status"));
+    JSONObject resumed = Store.assessment();
+    assertEquals(started.getString("id"), resumed.getString("id"));
+    assertEquals(0, resumed.getInt("position"));
+    assertEquals(2, resumed.getJSONArray("items").length());
   }
 }

@@ -1,0 +1,50 @@
+{
+  "id": "boot-testing",
+  "type": "quiz",
+  "title": "Testing Spring Boot applications",
+  "prompt": "How do you choose between unit, slice, and full integration tests?",
+  "choices": [
+    "Use the smallest context that proves the behavior; reserve full-context tests for wiring and boundary confidence.",
+    "It is guaranteed by the Java compiler"
+  ],
+  "answer": "Use the smallest context that proves the behavior; reserve full-context tests for wiring and boundary confidence.",
+  "explanation": "Use the smallest context that proves the behavior; reserve full-context tests for wiring and boundary confidence.",
+  "sources": [
+    "https://docs.spring.io/spring-boot/reference/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "dependency-injection"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "spring-boot",
+    "experienced",
+    "production"
+  ],
+  "eli5": {
+    "analogy": "A test context is a workshop: open only the tools needed for the job.",
+    "definition": "Use the smallest context that proves the behavior; reserve full-context tests for wiring and boundary confidence.",
+    "example": "Apply the idea to one request, one transaction, or one deployment change.",
+    "limits": "Too much context makes tests slow and hides ownership."
+  },
+  "interview": {
+    "question": "How do you choose between unit, slice, and full integration tests?",
+    "shortAnswer": "Use the smallest context that proves the behavior; reserve full-context tests for wiring and boundary confidence.",
+    "deepAnswer": "Use the smallest context that proves the behavior; reserve full-context tests for wiring and boundary confidence. In an interview, connect it to evidence and one failure mode."
+  },
+  "tips": [
+    "Lead with the production invariant.",
+    "Name the boundary and the evidence you would inspect."
+  ],
+  "commonMistakes": [
+    "Test one failure mode per test.",
+    "Mocking every collaborator in an integration test."
+  ],
+  "followUps": [
+    "What belongs in a Testcontainers test?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25",
+  "compatibility": "For Spring Boot 3 and Java 21, verify the corresponding reference documentation and serialization/runtime defaults."
+}

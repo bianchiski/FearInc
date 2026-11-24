@@ -1,0 +1,51 @@
+{
+  "id": "aws-config-import",
+  "type": "quiz",
+  "title": "Secrets Manager and Parameter Store config",
+  "prompt": "How do you load AWS-managed configuration into Spring Boot safely?",
+  "answer": "Use spring.config.import with the aws-parameterstore or aws-secretsmanager prefix, scope IAM to the exact paths, and treat refresh as an explicit decision.",
+  "explanation": "Use spring.config.import with the aws-parameterstore or aws-secretsmanager prefix, scope IAM to the exact paths, and treat refresh as an explicit decision.",
+  "sources": [
+    "https://docs.awspring.io/spring-cloud-aws/docs/current/reference/html/index.html",
+    "https://docs.aws.amazon.com/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "least-privilege"
+  ],
+  "track": "AWS",
+  "tier": "experienced",
+  "tags": [
+    "aws",
+    "spring-boot",
+    "integration"
+  ],
+  "eli5": {
+    "analogy": "The app reads a labeled shelf at startup instead of a file in the image.",
+    "definition": "Use spring.config.import with the aws-parameterstore or aws-secretsmanager prefix, scope IAM to the exact paths, and treat refresh as an explicit decision.",
+    "example": "Walk one request or message through the AWS service and name where identity, retries, and failure are handled.",
+    "limits": "Values are resolved at startup unless refresh is configured, so rotation is not instantly visible."
+  },
+  "interview": {
+    "question": "How do you load AWS-managed configuration into Spring Boot safely?",
+    "shortAnswer": "Use spring.config.import with the aws-parameterstore or aws-secretsmanager prefix, scope IAM to the exact paths, and treat refresh as an explicit decision.",
+    "deepAnswer": "Use spring.config.import with the aws-parameterstore or aws-secretsmanager prefix, scope IAM to the exact paths, and treat refresh as an explicit decision. Tie it to IAM scope, failure behavior, and the evidence you would check in production."
+  },
+  "tips": [
+    "Name the identity, the failure mode, and the retry behavior.",
+    "Mention least-privilege IAM for the exact resource."
+  ],
+  "commonMistakes": [
+    "Granting wildcard read access to every secret.",
+    "Logging resolved property values or exposing them through Actuator env."
+  ],
+  "followUps": [
+    "What happens at startup if the secret is unreachable?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25 with Spring Cloud AWS 4.x",
+  "compatibility": "Spring Cloud AWS versions track Spring Boot generations; for Boot 3.x use the 3.x line and verify property prefixes and starters.",
+  "choices": [
+    "Use spring.config.import with the aws-parameterstore or aws-secretsmanager prefix, scope IAM to the exact paths, and treat refresh as an explicit decision.",
+    "It is handled automatically with no configuration or IAM scope"
+  ]
+}

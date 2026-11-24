@@ -1,0 +1,51 @@
+{
+  "id": "aws-s3-patterns",
+  "type": "quiz",
+  "title": "S3 upload and download patterns",
+  "prompt": "How should a Spring API handle large file uploads to S3?",
+  "answer": "Prefer presigned URLs or multipart transfer so bytes bypass the application tier, and validate size, type, ownership, and expiry.",
+  "explanation": "Prefer presigned URLs or multipart transfer so bytes bypass the application tier, and validate size, type, ownership, and expiry.",
+  "sources": [
+    "https://docs.awspring.io/spring-cloud-aws/docs/current/reference/html/index.html",
+    "https://docs.aws.amazon.com/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "least-privilege"
+  ],
+  "track": "AWS",
+  "tier": "experienced",
+  "tags": [
+    "aws",
+    "spring-boot",
+    "integration"
+  ],
+  "eli5": {
+    "analogy": "A presigned URL is a short-lived ticket straight to the warehouse door.",
+    "definition": "Prefer presigned URLs or multipart transfer so bytes bypass the application tier, and validate size, type, ownership, and expiry.",
+    "example": "Walk one request or message through the AWS service and name where identity, retries, and failure are handled.",
+    "limits": "S3 is eventually consistent for some cross-system workflows and not a filesystem; listing and rename semantics differ."
+  },
+  "interview": {
+    "question": "How should a Spring API handle large file uploads to S3?",
+    "shortAnswer": "Prefer presigned URLs or multipart transfer so bytes bypass the application tier, and validate size, type, ownership, and expiry.",
+    "deepAnswer": "Prefer presigned URLs or multipart transfer so bytes bypass the application tier, and validate size, type, ownership, and expiry. Tie it to IAM scope, failure behavior, and the evidence you would check in production."
+  },
+  "tips": [
+    "Name the identity, the failure mode, and the retry behavior.",
+    "Mention least-privilege IAM for the exact resource."
+  ],
+  "commonMistakes": [
+    "Streaming every upload through the Spring service thread pool.",
+    "Issuing long-lived or overly broad presigned URLs."
+  ],
+  "followUps": [
+    "How do you prevent one user from reading another user object?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25 with Spring Cloud AWS 4.x",
+  "compatibility": "Spring Cloud AWS versions track Spring Boot generations; for Boot 3.x use the 3.x line and verify property prefixes and starters.",
+  "choices": [
+    "Prefer presigned URLs or multipart transfer so bytes bypass the application tier, and validate size, type, ownership, and expiry.",
+    "It is handled automatically with no configuration or IAM scope"
+  ]
+}

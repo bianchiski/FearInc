@@ -1,0 +1,51 @@
+{
+  "id": "aws-credentials-chain",
+  "type": "quiz",
+  "title": "AWS credentials in Spring services",
+  "prompt": "Why should a Spring service on ECS or EKS avoid static access keys?",
+  "answer": "Use the default credentials provider chain with an attached role (task role or IRSA/Pod Identity) so credentials are short-lived, scoped, and rotated automatically.",
+  "explanation": "Use the default credentials provider chain with an attached role (task role or IRSA/Pod Identity) so credentials are short-lived, scoped, and rotated automatically.",
+  "sources": [
+    "https://docs.awspring.io/spring-cloud-aws/docs/current/reference/html/index.html",
+    "https://docs.aws.amazon.com/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "least-privilege"
+  ],
+  "track": "AWS",
+  "tier": "experienced",
+  "tags": [
+    "aws",
+    "spring-boot",
+    "integration"
+  ],
+  "eli5": {
+    "analogy": "A role is a visitor badge that expires; an access key is a master key left under the mat.",
+    "definition": "Use the default credentials provider chain with an attached role (task role or IRSA/Pod Identity) so credentials are short-lived, scoped, and rotated automatically.",
+    "example": "Walk one request or message through the AWS service and name where identity, retries, and failure are handled.",
+    "limits": "Local development often uses profiles or SSO, so the chain resolves different sources per environment; verify which source won."
+  },
+  "interview": {
+    "question": "Why should a Spring service on ECS or EKS avoid static access keys?",
+    "shortAnswer": "Use the default credentials provider chain with an attached role (task role or IRSA/Pod Identity) so credentials are short-lived, scoped, and rotated automatically.",
+    "deepAnswer": "Use the default credentials provider chain with an attached role (task role or IRSA/Pod Identity) so credentials are short-lived, scoped, and rotated automatically. Tie it to IAM scope, failure behavior, and the evidence you would check in production."
+  },
+  "tips": [
+    "Name the identity, the failure mode, and the retry behavior.",
+    "Mention least-privilege IAM for the exact resource."
+  ],
+  "commonMistakes": [
+    "Committing keys in application.yml or env files.",
+    "Assuming the same chain order applies to every SDK and runtime."
+  ],
+  "followUps": [
+    "How do you prove which identity the app is using?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25 with Spring Cloud AWS 4.x",
+  "compatibility": "Spring Cloud AWS versions track Spring Boot generations; for Boot 3.x use the 3.x line and verify property prefixes and starters.",
+  "choices": [
+    "Use the default credentials provider chain with an attached role (task role or IRSA/Pod Identity) so credentials are short-lived, scoped, and rotated automatically.",
+    "It is handled automatically with no configuration or IAM scope"
+  ]
+}

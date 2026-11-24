@@ -44,22 +44,59 @@
       "order": 3
     },
     {
-      "id": "low-level-java",
-      "title": "Low-level Java",
+      "id": "spring-boot",
+      "title": "Spring Boot Production Mastery",
       "items": [
-        "hashmap-shape"
+        "spring-constructor",
+        "design-order-api",
+        "boot-startup",
+        "boot-mvc-lifecycle",
+        "boot-data-transactions",
+        "boot-testing",
+        "boot-production-ops",
+        "boot-security"
       ],
       "track": "Backend",
       "order": 4
     },
     {
-      "id": "systems",
-      "title": "Systems and Very Low Level",
+      "id": "spring-internals",
+      "title": "Spring Framework Internals",
       "items": [
-        "byte-order"
+        "spring-bean-lifecycle",
+        "spring-proxy-boundary",
+        "spring-auto-config",
+        "spring-thread-context"
       ],
       "track": "Backend",
       "order": 5
+    },
+    {
+      "id": "java-deep-dive",
+      "title": "Java 25 Deep Dive",
+      "items": [
+        "hashmap-shape",
+        "java-memory-model",
+        "java-concurrency",
+        "java-virtual-threads",
+        "java-collections",
+        "java-language-model"
+      ],
+      "track": "Backend",
+      "order": 6
+    },
+    {
+      "id": "jvm-diagnostics",
+      "title": "JVM and Production Diagnostics",
+      "items": [
+        "byte-order",
+        "jvm-memory",
+        "jvm-gc",
+        "jvm-diagnostics",
+        "jvm-production-symptoms"
+      ],
+      "track": "Backend",
+      "order": 7
     },
     {
       "id": "sql",
@@ -68,17 +105,7 @@
         "sql-index-choice"
       ],
       "track": "Backend",
-      "order": 6
-    },
-    {
-      "id": "spring",
-      "title": "Spring Boot",
-      "items": [
-        "spring-constructor",
-        "design-order-api"
-      ],
-      "track": "Backend",
-      "order": 7
+      "order": 8
     },
     {
       "id": "typescript-react",
@@ -87,16 +114,31 @@
         "react-snapshot"
       ],
       "track": "TypeScript & React",
-      "order": 8
+      "order": 9
     },
     {
       "id": "aws",
-      "title": "AWS",
+      "title": "AWS Fundamentals",
       "items": [
         "iam-least-privilege"
       ],
       "track": "AWS",
-      "order": 9
+      "order": 10
+    },
+    {
+      "id": "spring-aws",
+      "title": "Spring Boot on AWS",
+      "items": [
+        "aws-credentials-chain",
+        "aws-config-import",
+        "aws-sqs-listener",
+        "aws-s3-patterns",
+        "aws-rds-datasource",
+        "aws-deployment-runtime",
+        "aws-observability"
+      ],
+      "track": "AWS",
+      "order": 11
     },
     {
       "id": "security",
@@ -105,7 +147,7 @@
         "owasp-2025-first"
       ],
       "track": "Backend",
-      "order": 10
+      "order": 12
     },
     {
       "id": "devops",
@@ -114,7 +156,7 @@
         "docker-image-vs-container"
       ],
       "track": "Backend",
-      "order": 11
+      "order": 13
     }
   ]
 }

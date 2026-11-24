@@ -1,0 +1,50 @@
+{
+  "id": "boot-mvc-lifecycle",
+  "type": "quiz",
+  "title": "Spring MVC request lifecycle",
+  "prompt": "Walk through a request from HTTP entry to controller response.",
+  "choices": [
+    "The request passes filters, dispatching, handler mapping, argument resolution, controller invocation, advice, message conversion, and response filters.",
+    "It is guaranteed by the Java compiler"
+  ],
+  "answer": "The request passes filters, dispatching, handler mapping, argument resolution, controller invocation, advice, message conversion, and response filters.",
+  "explanation": "The request passes filters, dispatching, handler mapping, argument resolution, controller invocation, advice, message conversion, and response filters.",
+  "sources": [
+    "https://docs.spring.io/spring-boot/reference/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "dependency-injection"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "spring-boot",
+    "experienced",
+    "production"
+  ],
+  "eli5": {
+    "analogy": "A request is a package moving through checkpoints.",
+    "definition": "The request passes filters, dispatching, handler mapping, argument resolution, controller invocation, advice, message conversion, and response filters.",
+    "example": "Apply the idea to one request, one transaction, or one deployment change.",
+    "limits": "Each checkpoint has different extension and observability hooks."
+  },
+  "interview": {
+    "question": "Walk through a request from HTTP entry to controller response.",
+    "shortAnswer": "The request passes filters, dispatching, handler mapping, argument resolution, controller invocation, advice, message conversion, and response filters.",
+    "deepAnswer": "The request passes filters, dispatching, handler mapping, argument resolution, controller invocation, advice, message conversion, and response filters. In an interview, connect it to evidence and one failure mode."
+  },
+  "tips": [
+    "Lead with the production invariant.",
+    "Name the boundary and the evidence you would inspect."
+  ],
+  "commonMistakes": [
+    "Separate transport concerns from application decisions.",
+    "Confusing filters with interceptors."
+  ],
+  "followUps": [
+    "Where would you place correlation IDs?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25",
+  "compatibility": "For Spring Boot 3 and Java 21, verify the corresponding reference documentation and serialization/runtime defaults."
+}

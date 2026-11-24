@@ -1,0 +1,63 @@
+{
+  "id": "spring-thread-context",
+  "type": "drill",
+  "title": "Spring execution context boundaries",
+  "prompt": "Production symptom: What can be lost when work moves to another executor?",
+  "answer": "Transaction, security, MDC, and request context do not automatically have identical propagation semantics across threads.",
+  "explanation": "Transaction, security, MDC, and request context do not automatically have identical propagation semantics across threads.",
+  "sources": [
+    "https://docs.spring.io/spring-framework/reference/core.html"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "dependency-injection"
+  ],
+  "track": "Backend",
+  "tier": "experienced",
+  "tags": [
+    "spring-internals",
+    "diagnostics",
+    "experienced"
+  ],
+  "eli5": {
+    "analogy": "Moving work to another thread is moving to another room with different badges.",
+    "definition": "Transaction, security, MDC, and request context do not automatically have identical propagation semantics across threads.",
+    "example": "Write the boundary down, then identify the component that applies the behavior.",
+    "limits": "Virtual threads change scheduling cost, not business-context correctness."
+  },
+  "interview": {
+    "question": "What can be lost when work moves to another executor?",
+    "shortAnswer": "Transaction, security, MDC, and request context do not automatically have identical propagation semantics across threads.",
+    "deepAnswer": "Transaction, security, MDC, and request context do not automatically have identical propagation semantics across threads. Diagnose it by identifying whether the call crossed the relevant framework boundary."
+  },
+  "tips": [
+    "Separate symptom, mechanism, and fix.",
+    "Name one observation that would falsify your hypothesis."
+  ],
+  "commonMistakes": [
+    "Blaming annotations without checking proxies or conditions.",
+    "Assuming thread movement preserves every context."
+  ],
+  "followUps": [
+    "How would you verify the repair?",
+    "What changes under a different proxy or executor?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25",
+  "compatibility": "The same concepts apply to Boot 3 and Java 21, but verify package names and defaults against the target release.",
+  "scenario": {
+    "symptom": "What can be lost when work moves to another executor?",
+    "evidence": [
+      "Application logs and startup report",
+      "Relevant endpoint or bean behavior",
+      "Recent configuration or deployment change"
+    ],
+    "hypotheses": [
+      "Incorrect condition or missing dependency",
+      "Proxy or lifecycle boundary",
+      "Context not propagated across an executor"
+    ],
+    "diagnosis": "Transaction, security, MDC, and request context do not automatically have identical propagation semantics across threads.",
+    "fix": "Make the boundary explicit, add focused observability, and verify with a regression test.",
+    "verification": "Reproduce the original symptom, run the focused test, and confirm the production signal changes."
+  }
+}

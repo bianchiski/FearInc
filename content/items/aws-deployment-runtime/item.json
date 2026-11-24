@@ -1,0 +1,51 @@
+{
+  "id": "aws-deployment-runtime",
+  "type": "quiz",
+  "title": "Running Spring Boot on AWS runtimes",
+  "prompt": "How do ECS/EKS, Lambda, and plain EC2 change Spring Boot operations?",
+  "answer": "Containers favor graceful shutdown, health probes, and memory-aware JVM settings; Lambda favors fast startup, cold-start mitigation, and stateless handlers.",
+  "explanation": "Containers favor graceful shutdown, health probes, and memory-aware JVM settings; Lambda favors fast startup, cold-start mitigation, and stateless handlers.",
+  "sources": [
+    "https://docs.awspring.io/spring-cloud-aws/docs/current/reference/html/index.html",
+    "https://docs.aws.amazon.com/"
+  ],
+  "verified": "2026-11-23",
+  "theory": [
+    "least-privilege"
+  ],
+  "track": "AWS",
+  "tier": "experienced",
+  "tags": [
+    "aws",
+    "spring-boot",
+    "integration"
+  ],
+  "eli5": {
+    "analogy": "Different venues need different packing: a van, a courier bag, or a warehouse.",
+    "definition": "Containers favor graceful shutdown, health probes, and memory-aware JVM settings; Lambda favors fast startup, cold-start mitigation, and stateless handlers.",
+    "example": "Walk one request or message through the AWS service and name where identity, retries, and failure are handled.",
+    "limits": "Cold-start remedies such as SnapStart or native images trade build complexity for latency."
+  },
+  "interview": {
+    "question": "How do ECS/EKS, Lambda, and plain EC2 change Spring Boot operations?",
+    "shortAnswer": "Containers favor graceful shutdown, health probes, and memory-aware JVM settings; Lambda favors fast startup, cold-start mitigation, and stateless handlers.",
+    "deepAnswer": "Containers favor graceful shutdown, health probes, and memory-aware JVM settings; Lambda favors fast startup, cold-start mitigation, and stateless handlers. Tie it to IAM scope, failure behavior, and the evidence you would check in production."
+  },
+  "tips": [
+    "Name the identity, the failure mode, and the retry behavior.",
+    "Mention least-privilege IAM for the exact resource."
+  ],
+  "commonMistakes": [
+    "Ignoring container memory limits when sizing the JVM heap.",
+    "Running long background threads inside a function runtime."
+  ],
+  "followUps": [
+    "Which signal tells you a cold start is the bottleneck?"
+  ],
+  "bootBaseline": "Spring Boot 4.0.x / Java 25 with Spring Cloud AWS 4.x",
+  "compatibility": "Spring Cloud AWS versions track Spring Boot generations; for Boot 3.x use the 3.x line and verify property prefixes and starters.",
+  "choices": [
+    "Containers favor graceful shutdown, health probes, and memory-aware JVM settings; Lambda favors fast startup, cold-start mitigation, and stateless handlers.",
+    "It is handled automatically with no configuration or IAM scope"
+  ]
+}

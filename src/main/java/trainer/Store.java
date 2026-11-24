@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -125,6 +126,17 @@ public final class Store {
             id integer primary key check(id = 1),
             tier text not null,
             tracks text not null)
+          """);
+        statement.executeUpdate("""
+          create table if not exists assessments(
+            id text primary key,
+            concept text not null,
+            items text not null,
+            position integer not null,
+            outcomes text not null,
+            status text not null,
+            created text not null,
+            updated text not null)
           """);
       }
       try (PreparedStatement insert = connection.prepareStatement(
@@ -417,6 +429,63 @@ public final class Store {
       }
       return items;
     });
+  }
+
+  public static JSONObject assessment() {
+    return withConnection(connection -> {
+      try (Statement statement = connection.createStatement();
+          ResultSet rows = statement.executeQuery(
+              "select id,concept,items,position,outcomes,status,created,updated "
+                  + "from assessments where status='active' order by updated desc limit 1")) {
+        if (!rows.next()) return new JSONObject().put("status", "none");
+        return assessmentRow(rows);
+      }
+    });
+  }
+
+  public static JSONObject saveAssessment(
+      String id, String concept, JSONArray items, int position, JSONObject outcomes, String status) {
+    return withConnection(connection -> {
+      String now = Instant.now().toString();
+      try (PreparedStatement statement = connection.prepareStatement("""
+          insert into assessments(id,concept,items,position,outcomes,status,created,updated)
+          values(?,?,?,?,?,?,?,?)
+          on conflict(id) do update set
+            position=excluded.position, outcomes=excluded.outcomes,
+            status=excluded.status, updated=excluded.updated
+          """)) {
+        statement.setString(1, id);
+        statement.setString(2, concept);
+        statement.setString(3, items.toString());
+        statement.setInt(4, position);
+        statement.setString(5, outcomes.toString());
+        statement.setString(6, status);
+        statement.setString(7, now);
+        statement.setString(8, now);
+        statement.executeUpdate();
+      }
+      return new JSONObject()
+          .put("id", id).put("concept", concept).put("items", items)
+          .put("position", position).put("outcomes", outcomes).put("status", status);
+    });
+  }
+
+  public static JSONObject startAssessment(String concept, JSONArray items) {
+    JSONObject active = assessment();
+    if ("active".equals(active.optString("status"))) return active;
+    return saveAssessment(UUID.randomUUID().toString(), concept, items, 0, new JSONObject(), "active");
+  }
+
+  private static JSONObject assessmentRow(ResultSet rows) throws SQLException {
+    return new JSONObject()
+        .put("id", rows.getString(1))
+        .put("concept", rows.getString(2))
+        .put("items", new JSONArray(rows.getString(3)))
+        .put("position", rows.getInt(4))
+        .put("outcomes", new JSONObject(rows.getString(5)))
+        .put("status", rows.getString(6))
+        .put("created", rows.getString(7))
+        .put("updated", rows.getString(8));
   }
 
   public static JSONObject profile() {

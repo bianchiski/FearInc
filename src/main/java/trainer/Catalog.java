@@ -106,6 +106,9 @@ public final class Catalog {
       requiredArray(item, "tips", id);
       requiredArray(item, "commonMistakes", id);
       requiredArray(item, "followUps", id);
+      if (item.has("bootBaseline")) requiredString(item, "bootBaseline", id);
+      if (item.has("compatibility")) requiredString(item, "compatibility", id);
+      if ("scenario".equals(item.getString("type"))) validateScenario(item, id);
       JSONArray sources = requiredArray(item, "sources", id);
       JSONArray theory = requiredArray(item, "theory", id);
       if (theory.isEmpty() || item.optString("theoryText").isBlank()) {
@@ -138,6 +141,18 @@ public final class Catalog {
         if ("data-structures".equals(item.getString("module")) && item.has("misconceptions")) {
           validateMisconceptions(item, id);
         }
+      }
+    }
+  }
+
+  private static void validateScenario(JSONObject item, String id) {
+    JSONObject scenario = requiredObject(item, "scenario", id);
+    for (String field : List.of("symptom", "diagnosis", "fix", "verification")) {
+      requiredString(scenario, field, id + " scenario");
+    }
+    for (String field : List.of("evidence", "hypotheses")) {
+      if (requiredArray(scenario, field, id + " scenario").isEmpty()) {
+        throw new IllegalStateException(id + " scenario needs " + field);
       }
     }
   }
